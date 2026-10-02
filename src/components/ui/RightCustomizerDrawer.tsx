@@ -131,8 +131,14 @@ export const RightCustomizerDrawer: React.FC = () => {
   const applyRx78GundamTheme = useKeyboardStore((s) => s.applyRx78GundamTheme);
   const cableVisible = useKeyboardStore((s) => s.cableVisible);
   const setCableVisible = useKeyboardStore((s) => s.setCableVisible);
+  const cableStyle = useKeyboardStore((s) => s.cableStyle);
+  const setCableStyle = useKeyboardStore((s) => s.setCableStyle);
+  const cableColor = useKeyboardStore((s) => s.cableColor);
+  const setCableColor = useKeyboardStore((s) => s.setCableColor);
   const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
   const setCableLedColor = useKeyboardStore((s) => s.setCableLedColor);
+  const cableConnectorMaterial = useKeyboardStore((s) => s.cableConnectorMaterial);
+  const setCableConnectorMaterial = useKeyboardStore((s) => s.setCableConnectorMaterial);
 
   const switchModel = useKeyboardStore((s) => s.switchModel);
   const setSwitchModel = useKeyboardStore((s) => s.setSwitchModel);
@@ -430,52 +436,139 @@ export const RightCustomizerDrawer: React.FC = () => {
                 </div>
 
                 {/* 0.5 Connected Luminous Aviator Coiled Cable Controls */}
-                <div className="p-3 rounded-2xl bg-slate-800/70 border border-white/10 flex flex-col gap-2.5">
+                <div className="p-3.5 rounded-2xl bg-slate-800/80 border border-white/10 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <span
-                        className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor]"
+                        className="w-3 h-3 rounded-full shadow-[0_0_10px_currentColor] transition-colors"
                         style={{ color: cableLedColor, backgroundColor: cableLedColor }}
                       />
-                      <span className="text-xs font-semibold text-slate-200">
-                        定制金属滚花发光航插线
-                      </span>
+                      <div>
+                        <span className="text-xs font-bold text-slate-200">
+                          客制化金属自锁航插线
+                        </span>
+                        <span className="block text-[9px] text-slate-400">
+                          支持任意型号键盘独立添加/断开
+                        </span>
+                      </div>
                     </div>
                     <button
                       onClick={() => setCableVisible(!cableVisible)}
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
+                      className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all ${
                         cableVisible
-                          ? 'bg-sky-500/20 text-sky-300 border-sky-400'
-                          : 'bg-slate-700/60 text-slate-400 border-white/10'
+                          ? 'bg-sky-500/20 text-sky-300 border-sky-400 shadow-md shadow-sky-500/20'
+                          : 'bg-slate-700/60 text-slate-400 border-white/10 hover:text-white'
                       }`}
                     >
-                      {cableVisible ? '已插上' : '已拔出'}
+                      {cableVisible ? '已连接 (点击断开)' : '点击插上航插线'}
                     </button>
                   </div>
 
                   {cableVisible && (
-                    <div className="flex items-center justify-between text-[10px] text-slate-400">
-                      <span>光圈霓虹灯效：</span>
-                      <div className="flex items-center gap-1.5">
-                        {[
-                          { name: '海蓝', color: '#38bdf8' },
-                          { name: '冷粉', color: '#ec4899' },
-                          { name: '警示金', color: '#eab308' },
-                          { name: '初号绿', color: '#10b981' },
-                          { name: '冷白', color: '#f8fafc' },
-                        ].map((c) => (
+                    <div className="flex flex-col gap-2.5 pt-2 border-t border-white/10">
+                      {/* 款式切换：螺旋弹簧线圈 vs 直出编织线 */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-300">线缆造型：</span>
+                        <div className="flex gap-1">
                           <button
-                            key={c.color}
-                            onClick={() => setCableLedColor(c.color)}
-                            className={`w-4 h-4 rounded-full border transition-transform ${
-                              cableLedColor.toLowerCase() === c.color.toLowerCase()
-                                ? 'scale-125 border-white shadow-[0_0_8px_currentColor]'
-                                : 'border-white/20 hover:scale-110'
+                            onClick={() => setCableStyle('coiled')}
+                            className={`px-2 py-0.5 rounded-lg text-[10px] font-medium border transition-colors ${
+                              cableStyle === 'coiled'
+                                ? 'bg-sky-500/20 text-sky-300 border-sky-400 font-bold'
+                                : 'bg-slate-900/60 text-slate-400 border-white/5 hover:text-white'
                             }`}
-                            style={{ backgroundColor: c.color, color: c.color }}
-                            title={c.name}
-                          />
-                        ))}
+                          >
+                            经典弹簧卷
+                          </button>
+                          <button
+                            onClick={() => setCableStyle('straight')}
+                            className={`px-2 py-0.5 rounded-lg text-[10px] font-medium border transition-colors ${
+                              cableStyle === 'straight'
+                                ? 'bg-sky-500/20 text-sky-300 border-sky-400 font-bold'
+                                : 'bg-slate-900/60 text-slate-400 border-white/5 hover:text-white'
+                            }`}
+                          >
+                            极简直出线
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 线身编织色彩 */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-300">线身配色：</span>
+                        <div className="flex items-center gap-1.5">
+                          {[
+                            { name: '电光蓝', color: '#2563eb' },
+                            { name: '午夜黑', color: '#18181b' },
+                            { name: '纯净白', color: '#f8fafc' },
+                            { name: '热烈粉', color: '#ec4899' },
+                            { name: '赛博黄', color: '#eab308' },
+                            { name: '极光绿', color: '#10b981' },
+                            { name: '初号紫', color: '#7c3aed' },
+                          ].map((c) => (
+                            <button
+                              key={c.color}
+                              onClick={() => setCableColor(c.color)}
+                              className={`w-3.5 h-3.5 rounded-full border transition-transform ${
+                                cableColor.toLowerCase() === c.color.toLowerCase()
+                                  ? 'scale-125 border-white shadow-sm'
+                                  : 'border-white/20 hover:scale-110'
+                              }`}
+                              style={{ backgroundColor: c.color }}
+                              title={c.name}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 金属航插头材质 */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-300">金属接头：</span>
+                        <div className="flex gap-1">
+                          {[
+                            { id: 'chrome' as const, label: '镀铬亮银' },
+                            { id: 'matte_black' as const, label: '哑光黑钛' },
+                            { id: 'brass_gold' as const, label: '沉金黄铜' },
+                          ].map((m) => (
+                            <button
+                              key={m.id}
+                              onClick={() => setCableConnectorMaterial(m.id)}
+                              className={`px-1.5 py-0.5 rounded-lg text-[9px] font-medium border transition-colors ${
+                                cableConnectorMaterial === m.id
+                                  ? 'bg-amber-500/20 text-amber-300 border-amber-400 font-bold'
+                                  : 'bg-slate-900/60 text-slate-400 border-white/5 hover:text-white'
+                              }`}
+                            >
+                              {m.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 光圈霓虹灯效 */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-300">光圈灯效：</span>
+                        <div className="flex items-center gap-1.5">
+                          {[
+                            { name: '冰海蓝', color: '#38bdf8' },
+                            { name: '冷粉', color: '#ec4899' },
+                            { name: '警示金', color: '#eab308' },
+                            { name: '初号绿', color: '#10b981' },
+                            { name: '纯冷白', color: '#f8fafc' },
+                          ].map((c) => (
+                            <button
+                              key={c.color}
+                              onClick={() => setCableLedColor(c.color)}
+                              className={`w-3.5 h-3.5 rounded-full border transition-transform ${
+                                cableLedColor.toLowerCase() === c.color.toLowerCase()
+                                  ? 'scale-125 border-white shadow-[0_0_8px_currentColor]'
+                                  : 'border-white/20 hover:scale-110'
+                              }`}
+                              style={{ backgroundColor: c.color, color: c.color }}
+                              title={c.name}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}

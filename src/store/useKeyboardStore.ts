@@ -27,7 +27,10 @@ export interface KeyboardState {
   layerVisibility: Record<GasketLayerId, boolean>;
   rx78Edition: boolean;
   cableVisible: boolean;
+  cableStyle: 'coiled' | 'straight';
+  cableColor: string;
   cableLedColor: string;
+  cableConnectorMaterial: 'chrome' | 'matte_black' | 'brass_gold';
 
   // Keycap Customization
   selectedKeyIds: string[];
@@ -70,7 +73,10 @@ export interface KeyboardState {
   setAllLayersVisible: () => void;
   setRx78Edition: (enabled: boolean) => void;
   setCableVisible: (visible: boolean) => void;
+  setCableStyle: (style: 'coiled' | 'straight') => void;
+  setCableColor: (color: string) => void;
   setCableLedColor: (color: string) => void;
+  setCableConnectorMaterial: (mat: 'chrome' | 'matte_black' | 'brass_gold') => void;
   applyRx78GundamTheme: () => void;
 
   selectKey: (keyId: string, multiSelect?: boolean) => void;
@@ -128,7 +134,10 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
   layerVisibility: { ...defaultLayers },
   rx78Edition: false,
   cableVisible: true,
+  cableStyle: 'coiled',
+  cableColor: '#2563eb',
   cableLedColor: '#38bdf8',
+  cableConnectorMaterial: 'chrome',
 
   selectedKeyIds: [],
   selectionMode: 'single',
@@ -212,7 +221,10 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
 
   setRx78Edition: (enabled) => set({ rx78Edition: enabled }),
   setCableVisible: (visible) => set({ cableVisible: visible }),
+  setCableStyle: (style) => set({ cableStyle: style }),
+  setCableColor: (color) => set({ cableColor: color }),
   setCableLedColor: (color) => set({ cableLedColor: color }),
+  setCableConnectorMaterial: (mat) => set({ cableConnectorMaterial: mat }),
   applyRx78GundamTheme: () => {
     set({
       rx78Edition: true,
@@ -220,7 +232,10 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
       caseFinish: 'anodized',
       weightMaterial: 'rx78_mecha',
       cableVisible: true,
+      cableStyle: 'coiled',
+      cableColor: '#2563eb',
       cableLedColor: '#38bdf8',
+      cableConnectorMaterial: 'chrome',
       activePresetTheme: 'gundam_rx78',
       keycapColorOverrides: {},
     });
@@ -548,7 +563,10 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
       layerVisibility: { ...defaultLayers },
       rx78Edition: false,
       cableVisible: true,
+      cableStyle: 'coiled',
+      cableColor: '#2563eb',
       cableLedColor: '#38bdf8',
+      cableConnectorMaterial: 'chrome',
       selectedKeyIds: [],
       activePresetTheme: 'retro_9009',
       keycapColorOverrides: {},

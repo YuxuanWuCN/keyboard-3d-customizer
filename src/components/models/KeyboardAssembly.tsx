@@ -12,7 +12,10 @@ export const KeyboardAssembly: React.FC = () => {
   const weightMaterial = useKeyboardStore((s) => s.weightMaterial);
   const rx78Edition = useKeyboardStore((s) => s.rx78Edition);
   const cableVisible = useKeyboardStore((s) => s.cableVisible);
+  const cableStyle = useKeyboardStore((s) => s.cableStyle);
+  const cableColor = useKeyboardStore((s) => s.cableColor);
   const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
+  const cableConnectorMaterial = useKeyboardStore((s) => s.cableConnectorMaterial);
   const explodedProgress = useKeyboardStore((s) => s.explodedProgress);
   const isolatedLayer = useKeyboardStore((s) => s.isolatedLayer);
   const layerVisibility = useKeyboardStore((s) => s.layerVisibility);
@@ -63,8 +66,10 @@ export const KeyboardAssembly: React.FC = () => {
       <AviatorCable
         model={model}
         visible={cableVisible}
+        style={cableStyle}
+        cableColor={cableColor}
         ledColor={cableLedColor}
-        cableColor={rx78Edition || caseColor.toLowerCase() === '#1d4ed8' ? '#2563eb' : '#3b82f6'}
+        connectorMaterial={cableConnectorMaterial}
         explodedProgress={explodedProgress}
       />
 

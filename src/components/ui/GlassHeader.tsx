@@ -31,6 +31,9 @@ export const GlassHeader: React.FC = () => {
   const exportConfiguration = useKeyboardStore((s) => s.exportConfiguration);
   const importConfiguration = useKeyboardStore((s) => s.importConfiguration);
   const resetDefaults = useKeyboardStore((s) => s.resetDefaults);
+  const cableVisible = useKeyboardStore((s) => s.cableVisible);
+  const setCableVisible = useKeyboardStore((s) => s.setCableVisible);
+  const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
 
   const [audioMenuOpen, setAudioMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -143,6 +146,23 @@ export const GlassHeader: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {/* Aviator Cable Quick Toggle Button */}
+        <button
+          onClick={() => setCableVisible(!cableVisible)}
+          className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+            cableVisible
+              ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30 shadow-sm shadow-sky-500/10'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
+          }`}
+          title={cableVisible ? '已连接金属航插线 (点击断开)' : '点击插上定制金属发光航插线'}
+        >
+          <span
+            className="w-2 h-2 rounded-full shadow-[0_0_6px_currentColor]"
+            style={{ color: cableLedColor, backgroundColor: cableLedColor }}
+          />
+          <span className="font-semibold">{cableVisible ? '航插线: 已接' : '航插线: 断开'}</span>
+        </button>
 
         {/* Audio Acoustics Control Popover */}
         <div className="relative">
