@@ -81,6 +81,7 @@ const SWITCH_MODELS: SwitchItem[] = [
 ];
 
 const CASE_COLOR_PRESETS = [
+  { name: '高达电光蓝', en: 'Gundam Blue', hex: '#1D4ED8', finish: 'anodized' as const },
   { name: '晚星阳极冰银', en: 'Silver', hex: '#C5CCD6', finish: 'anodized' as const },
   { name: '电泳极白', en: 'E-White', hex: '#F4F4F6', finish: 'e_white' as const },
   { name: '晚星冰晶浅蓝', en: 'Ice Blue', hex: '#8DA8BF', finish: 'anodized' as const },
@@ -94,6 +95,7 @@ const CASE_COLOR_PRESETS = [
 ];
 
 const WEIGHT_PRESETS = [
+  { id: 'rx78_mecha' as const, name: '高达 RX-78 浮雕背板', tag: '双层立体机甲', color: '#0891B2' },
   { id: 'brass_pvd' as const, name: 'PVD 镜面黄铜', tag: '高光金色', color: '#D4AF37' },
   { id: 'mirror_chroma' as const, name: 'PVD 极光炫彩', tag: '流光幻彩', color: '#93C5FD' },
   { id: 'anodized_gold' as const, name: '阳极喷砂金', tag: '细腻微光', color: '#FBBF24' },
@@ -124,6 +126,13 @@ export const RightCustomizerDrawer: React.FC = () => {
   const setCaseColor = useKeyboardStore((s) => s.setCaseColor);
   const weightMaterial = useKeyboardStore((s) => s.weightMaterial);
   const setWeightMaterial = useKeyboardStore((s) => s.setWeightMaterial);
+  const rx78Edition = useKeyboardStore((s) => s.rx78Edition);
+  const setRx78Edition = useKeyboardStore((s) => s.setRx78Edition);
+  const applyRx78GundamTheme = useKeyboardStore((s) => s.applyRx78GundamTheme);
+  const cableVisible = useKeyboardStore((s) => s.cableVisible);
+  const setCableVisible = useKeyboardStore((s) => s.setCableVisible);
+  const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
+  const setCableLedColor = useKeyboardStore((s) => s.setCableLedColor);
 
   const switchModel = useKeyboardStore((s) => s.switchModel);
   const setSwitchModel = useKeyboardStore((s) => s.setSwitchModel);
@@ -380,6 +389,98 @@ export const RightCustomizerDrawer: React.FC = () => {
             {/* TAB 2: CASE & FINISHES */}
             {activeTab === 'case' && (
               <div className="flex flex-col gap-4">
+                {/* 0. Gundam RX-78 Limited Mecha Edition Hero Card */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-950/80 via-slate-900 to-indigo-950/90 border border-blue-500/30 shadow-lg shadow-blue-500/10 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
+                      <span className="text-xs font-bold text-blue-200">
+                        高达 RX-78 深度机甲定制版
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                      限定机甲
+                    </span>
+                  </div>
+
+                  <p className="text-[10px] text-slate-300 leading-relaxed">
+                    电光蓝阳极外壳 • 朱红 CNC 倒角包边 • 侧边 4 道散热风道 • 双层立体机甲浮雕背板。
+                  </p>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => applyRx78GundamTheme()}
+                      className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[11px] font-bold shadow-md shadow-blue-600/30 flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                      <span>一键换装 RX-78 机甲全套</span>
+                    </button>
+                    <button
+                      onClick={() => setRx78Edition(!rx78Edition)}
+                      className={`px-3 py-2 rounded-xl text-[11px] font-semibold border transition-all ${
+                        rx78Edition
+                          ? 'bg-blue-500/20 text-blue-300 border-blue-400'
+                          : 'bg-slate-800/80 text-slate-400 border-white/10 hover:text-white'
+                      }`}
+                      title="单独开启/关闭 RX-78 机甲外壳与浮雕背板"
+                    >
+                      {rx78Edition ? '已开启' : '单独启用'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 0.5 Connected Luminous Aviator Coiled Cable Controls */}
+                <div className="p-3 rounded-2xl bg-slate-800/70 border border-white/10 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor]"
+                        style={{ color: cableLedColor, backgroundColor: cableLedColor }}
+                      />
+                      <span className="text-xs font-semibold text-slate-200">
+                        定制金属滚花发光航插线
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setCableVisible(!cableVisible)}
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
+                        cableVisible
+                          ? 'bg-sky-500/20 text-sky-300 border-sky-400'
+                          : 'bg-slate-700/60 text-slate-400 border-white/10'
+                      }`}
+                    >
+                      {cableVisible ? '已插上' : '已拔出'}
+                    </button>
+                  </div>
+
+                  {cableVisible && (
+                    <div className="flex items-center justify-between text-[10px] text-slate-400">
+                      <span>光圈霓虹灯效：</span>
+                      <div className="flex items-center gap-1.5">
+                        {[
+                          { name: '海蓝', color: '#38bdf8' },
+                          { name: '冷粉', color: '#ec4899' },
+                          { name: '警示金', color: '#eab308' },
+                          { name: '初号绿', color: '#10b981' },
+                          { name: '冷白', color: '#f8fafc' },
+                        ].map((c) => (
+                          <button
+                            key={c.color}
+                            onClick={() => setCableLedColor(c.color)}
+                            className={`w-4 h-4 rounded-full border transition-transform ${
+                              cableLedColor.toLowerCase() === c.color.toLowerCase()
+                                ? 'scale-125 border-white shadow-[0_0_8px_currentColor]'
+                                : 'border-white/20 hover:scale-110'
+                            }`}
+                            style={{ backgroundColor: c.color, color: c.color }}
+                            title={c.name}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* 1. Case Coating & Finish */}
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">

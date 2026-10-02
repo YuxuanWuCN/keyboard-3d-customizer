@@ -10,7 +10,7 @@ import {
   CameraPreset,
   KeyboardConfigV1,
 } from '../types/keyboard';
-import { THEME_PRESETS } from '../constants/themePresets';
+import { THEME_PRESETS, GUNDAM_RX78_PRESET } from '../constants/themePresets';
 import { KEYBOARD_LAYOUTS } from '../constants/keyboardLayouts';
 import { soundEngine } from '../audio/ProceduralSoundEngine';
 import { calculateTelemetry, getRandomPrompt, SAMPLE_TYPING_PROMPTS } from '../utils/telemetry';
@@ -21,10 +21,13 @@ export interface KeyboardState {
   model: KeyboardModelId;
   caseColor: string;
   caseFinish: 'anodized' | 'e_white' | 'raw_alu';
-  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold';
+  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold' | 'rx78_mecha';
   explodedProgress: number; // 0.0 to 1.0
   isolatedLayer: GasketLayerId | null;
   layerVisibility: Record<GasketLayerId, boolean>;
+  rx78Edition: boolean;
+  cableVisible: boolean;
+  cableLedColor: string;
 
   // Keycap Customization
   selectedKeyIds: string[];
@@ -65,6 +68,10 @@ export interface KeyboardState {
   setIsolatedLayer: (layer: GasketLayerId | null) => void;
   toggleLayerVisibility: (layer: GasketLayerId) => void;
   setAllLayersVisible: () => void;
+  setRx78Edition: (enabled: boolean) => void;
+  setCableVisible: (visible: boolean) => void;
+  setCableLedColor: (color: string) => void;
+  applyRx78GundamTheme: () => void;
 
   selectKey: (keyId: string, multiSelect?: boolean) => void;
   selectRegion: (region: KeyRegion | 'all' | 'accents_batch') => void;
@@ -119,6 +126,9 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
   explodedProgress: 0.0,
   isolatedLayer: null,
   layerVisibility: { ...defaultLayers },
+  rx78Edition: false,
+  cableVisible: true,
+  cableLedColor: '#38bdf8',
 
   selectedKeyIds: [],
   selectionMode: 'single',
@@ -199,6 +209,23 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     })),
 
   setAllLayersVisible: () => set({ layerVisibility: { ...defaultLayers }, isolatedLayer: null }),
+
+  setRx78Edition: (enabled) => set({ rx78Edition: enabled }),
+  setCableVisible: (visible) => set({ cableVisible: visible }),
+  setCableLedColor: (color) => set({ cableLedColor: color }),
+  applyRx78GundamTheme: () => {
+    set({
+      rx78Edition: true,
+      caseColor: '#1d4ed8',
+      caseFinish: 'anodized',
+      weightMaterial: 'rx78_mecha',
+      cableVisible: true,
+      cableLedColor: '#38bdf8',
+      activePresetTheme: 'gundam_rx78',
+      keycapColorOverrides: {},
+    });
+    get().applyPresetTheme('gundam_rx78');
+  },
 
   selectKey: (keyId, multiSelect = false) => {
     set((state) => {
@@ -289,7 +316,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     }),
 
   applyPresetTheme: (themeId) => {
-    const theme = THEME_PRESETS[themeId];
+    const theme = THEME_PRESETS[themeId] || (themeId === 'gundam_rx78' ? GUNDAM_RX78_PRESET : null);
     if (!theme) return;
     const layout = KEYBOARD_LAYOUTS[get().model];
     const overrides: Record<string, string> = {};
@@ -519,6 +546,9 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
       explodedProgress: 0.0,
       isolatedLayer: null,
       layerVisibility: { ...defaultLayers },
+      rx78Edition: false,
+      cableVisible: true,
+      cableLedColor: '#38bdf8',
       selectedKeyIds: [],
       activePresetTheme: 'retro_9009',
       keycapColorOverrides: {},

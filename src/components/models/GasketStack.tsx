@@ -8,7 +8,7 @@ import {
   SwitchModelId,
 } from '../../types/keyboard';
 import { KEYBOARD_LAYOUTS } from '../../constants/keyboardLayouts';
-import { THEME_PRESETS } from '../../constants/themePresets';
+import { THEME_PRESETS, GUNDAM_RX78_PRESET } from '../../constants/themePresets';
 import { KeycapItem } from './KeycapItem';
 import { InstancedSwitchArray } from './InstancedSwitchArray';
 import { StabilizerArray } from './StabilizerArray';
@@ -355,7 +355,8 @@ export const GasketStack: React.FC<GasketStackProps> = ({
             const isPressed = activePressedKeys.includes(item.keyDef.code);
 
             const activeTheme =
-              (activePresetTheme && THEME_PRESETS[activePresetTheme]) || THEME_PRESETS.retro_9009;
+              (activePresetTheme && THEME_PRESETS[activePresetTheme]) ||
+              (activePresetTheme === 'gundam_rx78' ? GUNDAM_RX78_PRESET : THEME_PRESETS.retro_9009);
 
             const defaultPalette =
               item.keyDef.code === 'Space' && activeTheme.palette.spacebar

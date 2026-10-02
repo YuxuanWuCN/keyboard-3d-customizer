@@ -17,6 +17,6 @@ export interface KeycapThemePreset {
     spacebar?: KeycapPaletteGroup;
   };
   recommendedCase: string;
-  recommendedWeight: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold';
+  recommendedWeight: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold' | 'rx78_mecha';
   defaultMaterial: KeycapMaterialType;
 }

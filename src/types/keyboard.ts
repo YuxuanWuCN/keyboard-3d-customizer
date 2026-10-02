@@ -83,7 +83,7 @@ export interface KeyboardConfigV1 {
   model: KeyboardModelId;
   caseColor: string;
   caseFinish: 'anodized' | 'e_white' | 'raw_alu';
-  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold';
+  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold' | 'rx78_mecha';
   plateMaterial: 'aluminum' | 'fr4' | 'brass' | 'polycarbonate';
   switchType: SwitchType;
   switchModel: SwitchModelId;

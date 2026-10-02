@@ -107,3 +107,19 @@ export const THEME_PRESETS: Record<string, KeycapThemePreset> = {
     defaultMaterial: 'abs'
   }
 };
+
+export const GUNDAM_RX78_PRESET: KeycapThemePreset = {
+  id: 'gundam_rx78',
+  name: '高达 RX-78 机甲限定 (Gundam Edition)',
+  description: '机甲战损白主键区，搭配高达电光蓝与联邦红修饰键，亮黄 V 型天线空格与专属机甲铭牌。',
+  designer: 'Earth Federation / RX-78-2 Custom',
+  palette: {
+    alphas: { top: '#F8FAFC', legend: '#0F172A' },
+    modifiers: { top: '#1D4ED8', legend: '#FFFFFF' },
+    accents: { top: '#DC2626', legend: '#FFFFFF' },
+    spacebar: { top: '#F59E0B', legend: '#0F172A' }
+  },
+  recommendedCase: '#1D4ED8',
+  recommendedWeight: 'rx78_mecha',
+  defaultMaterial: 'pbt'
+};

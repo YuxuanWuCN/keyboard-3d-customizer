@@ -3,12 +3,16 @@ import { useKeyboardStore } from '../../store/useKeyboardStore';
 import { KEYBOARD_LAYOUTS } from '../../constants/keyboardLayouts';
 import { ProceduralCase } from './ProceduralCase';
 import { GasketStack } from './GasketStack';
+import { AviatorCable } from './AviatorCable';
 
 export const KeyboardAssembly: React.FC = () => {
   const model = useKeyboardStore((s) => s.model);
   const caseColor = useKeyboardStore((s) => s.caseColor);
   const caseFinish = useKeyboardStore((s) => s.caseFinish);
   const weightMaterial = useKeyboardStore((s) => s.weightMaterial);
+  const rx78Edition = useKeyboardStore((s) => s.rx78Edition);
+  const cableVisible = useKeyboardStore((s) => s.cableVisible);
+  const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
   const explodedProgress = useKeyboardStore((s) => s.explodedProgress);
   const isolatedLayer = useKeyboardStore((s) => s.isolatedLayer);
   const layerVisibility = useKeyboardStore((s) => s.layerVisibility);
@@ -52,6 +56,16 @@ export const KeyboardAssembly: React.FC = () => {
         explodedProgress={explodedProgress}
         layerVisibility={layerVisibility}
         isolatedLayer={isolatedLayer}
+        rx78Edition={rx78Edition}
+      />
+
+      {/* High-End Luminous Metal Aviator Coiled Cable */}
+      <AviatorCable
+        model={model}
+        visible={cableVisible}
+        ledColor={cableLedColor}
+        cableColor={rx78Edition || caseColor.toLowerCase() === '#1d4ed8' ? '#2563eb' : '#3b82f6'}
+        explodedProgress={explodedProgress}
       />
 
       {/* 7 Gasket Internal Layers Stack */}
