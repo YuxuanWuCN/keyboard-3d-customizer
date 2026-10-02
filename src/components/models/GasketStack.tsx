@@ -8,6 +8,7 @@ import {
   SwitchModelId,
 } from '../../types/keyboard';
 import { KEYBOARD_LAYOUTS } from '../../constants/keyboardLayouts';
+import { THEME_PRESETS } from '../../constants/themePresets';
 import { KeycapItem } from './KeycapItem';
 import { InstancedSwitchArray } from './InstancedSwitchArray';
 
@@ -351,13 +352,31 @@ export const GasketStack: React.FC<GasketStackProps> = ({
           {keyPositions.map((item) => {
             const isSelected = selectedKeyIds.includes(item.id);
             const isPressed = activePressedKeys.includes(item.keyDef.code);
-            const topColor =
-              keycapColorOverrides[item.id] ||
-              (item.keyDef.region === 'accent'
-                ? '#7b9a7b'
-                : item.keyDef.region === 'modifiers'
-                ? '#c1beb5'
-                : '#e3dfd5');
+
+            const activeTheme =
+              (activePresetTheme && THEME_PRESETS[activePresetTheme]) || THEME_PRESETS.retro_9009;
+
+            const defaultPalette =
+              item.keyDef.code === 'Space' && activeTheme.palette.spacebar
+                ? activeTheme.palette.spacebar
+                : item.keyDef.region === 'accent'
+                ? activeTheme.palette.accents
+                : item.keyDef.region === 'modifiers' || item.keyDef.region === 'function'
+                ? activeTheme.palette.modifiers
+                : activeTheme.palette.alphas;
+
+            const topColor = keycapColorOverrides[item.id] || defaultPalette.top;
+
+            // Auto-contrasting legend if customized, otherwise theme-designed legend
+            let legendColor = defaultPalette.legend;
+            if (keycapColorOverrides[item.id]) {
+              const clean = topColor.replace('#', '');
+              const r = parseInt(clean.substring(0, 2), 16) || 0;
+              const g = parseInt(clean.substring(2, 4), 16) || 0;
+              const b = parseInt(clean.substring(4, 6), 16) || 0;
+              const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+              legendColor = lum > 0.5 ? '#181a20' : '#ffffff';
+            }
 
             return (
               <KeycapItem
@@ -366,7 +385,7 @@ export const GasketStack: React.FC<GasketStackProps> = ({
                 xPos={item.x}
                 zPos={item.z}
                 topColor={topColor}
-                legendColor={item.keyDef.region === 'accent' ? '#ffffff' : '#2b2d2f'}
+                legendColor={legendColor}
                 materialParams={keycapMaterial}
                 isSelected={isSelected}
                 isPressed={isPressed}

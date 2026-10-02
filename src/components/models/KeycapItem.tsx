@@ -15,44 +15,63 @@ interface KeycapItemProps {
   onClick: (e: any) => void;
 }
 
-// Generate canvas texture for keycap legend
-function createKeycapTexture(label: string, subLabel: string | undefined, topColor: string, legendColor: string): THREE.CanvasTexture {
+// Generate high-DPI canvas texture for keycap legend
+function createKeycapTexture(
+  label: string,
+  subLabel: string | undefined,
+  legendColor: string
+): THREE.CanvasTexture | null {
+  if (!label || label.trim() === '' || label === 'SPACE') {
+    return null;
+  }
+
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
+  const size = 512;
+  canvas.width = size;
+  canvas.height = size;
   const ctx = canvas.getContext('2d')!;
 
-  // Background matching topColor
-  ctx.fillStyle = topColor;
-  ctx.fillRect(0, 0, 256, 256);
+  // High quality transparent background
+  ctx.clearRect(0, 0, size, size);
 
-  // Border micro-highlight
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(4, 4, 248, 248);
-
-  // Legend text
   ctx.fillStyle = legendColor;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  if (label.length <= 2) {
-    ctx.font = 'bold 88px "Inter", "Arial", sans-serif';
-    ctx.fillText(label, 128, subLabel ? 148 : 128);
-
-    if (subLabel) {
-      ctx.font = 'bold 52px "Inter", "Arial", sans-serif';
-      ctx.fillText(subLabel, 128, 64);
-    }
+  // Render based on key type
+  if (label.length === 1 && /^[a-zA-Z]$/.test(label)) {
+    // Single alphabet letters: 'A', 'B', 'C', 'Q', 'W', 'E'...
+    ctx.font = 'bold 240px "Inter", "Segoe UI", -apple-system, Arial, sans-serif';
+    ctx.fillText(label.toUpperCase(), size / 2, size / 2 - 4);
+  } else if (subLabel) {
+    // Dual legend (e.g., '1' with '!', ';' with ':')
+    ctx.font = 'bold 150px "Inter", "Segoe UI", -apple-system, Arial, sans-serif';
+    ctx.fillText(subLabel, size / 2, 145);
+    ctx.font = 'bold 180px "Inter", "Segoe UI", -apple-system, Arial, sans-serif';
+    ctx.fillText(label, size / 2, 350);
+  } else if (label.length <= 3) {
+    // Short functional keys: 'ESC', 'TAB', 'WIN', 'ALT', 'FN', 'DEL', '▲', '▼', '◄', '►'
+    const isArrow = ['▲', '▼', '◄', '►'].includes(label);
+    const fontSize = isArrow ? 200 : label.length === 3 ? 135 : 160;
+    ctx.font = `bold ${fontSize}px "Inter", "Segoe UI", -apple-system, Arial, sans-serif`;
+    ctx.fillText(label, size / 2, size / 2);
   } else {
-    // Modifier or long labels like ENTER, BACKSPACE, SHIFT
-    const fontSize = label.length > 6 ? 34 : 44;
-    ctx.font = `bold ${fontSize}px "Inter", "Arial", sans-serif`;
-    ctx.fillText(label, 128, 128);
+    // Longer modifier labels: 'ENTER', 'BACKSPACE', 'SHIFT', 'CAPS'
+    const fontSize = label.length >= 8 ? 80 : 105;
+    ctx.font = `bold ${fontSize}px "Inter", "Segoe UI", -apple-system, Arial, sans-serif`;
+    let display = label;
+    if (label === 'ENTER') display = 'ENTER ↵';
+    else if (label === 'BACKSPACE') display = '⌫ BACK';
+    else if (label === 'SHIFT') display = '⇧ SHIFT';
+    else if (label === 'CAPS') display = '⇪ CAPS';
+    ctx.fillText(display, size / 2, size / 2);
   }
 
   const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 4;
+  texture.anisotropy = 8;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
   texture.needsUpdate = true;
   return texture;
 }
@@ -71,13 +90,14 @@ export const KeycapItem: React.FC<KeycapItemProps> = ({
   const meshRef = useRef<THREE.Group>(null);
   const currentYRef = useRef(0);
 
-  // Dynamic geometry for keycap
-  const geom = useMemo(() => {
-    const w = keyDef.unitWidth * 19.05 - 1.0;
-    const d = (keyDef.unitHeight || 1.0) * 19.05 - 1.0;
-    const heightMap: Record<string, number> = { R1: 9.8, R2: 8.6, R3: 7.8, R4: 8.2 };
-    const h = heightMap[keyDef.profileRow] || 8.2;
+  const w = keyDef.unitWidth * 19.05 - 1.0;
+  const d = (keyDef.unitHeight || 1.0) * 19.05 - 1.0;
+  const heightMap: Record<string, number> = { R1: 9.8, R2: 8.6, R3: 7.8, R4: 8.2 };
+  const h = heightMap[keyDef.profileRow] || 8.2;
+  const topY = h / 2 + 0.05;
 
+  // Dynamic 3D Cherry-profile sculpted keycap geometry
+  const geom = useMemo(() => {
     const shape = new THREE.Shape();
     const x = -w / 2;
     const y = -d / 2;
@@ -104,18 +124,17 @@ export const KeycapItem: React.FC<KeycapItemProps> = ({
     g.rotateX(Math.PI / 2);
     g.center();
     return g;
-  }, [keyDef]);
+  }, [w, d, h]);
 
-  // Texture
-  const texture = useMemo(() => {
-    return createKeycapTexture(keyDef.label, keyDef.subLabel, topColor, legendColor);
-  }, [keyDef.label, keyDef.subLabel, topColor, legendColor]);
+  // High-DPI Crisp Legend Decal Texture
+  const legendTexture = useMemo(() => {
+    return createKeycapTexture(keyDef.label, keyDef.subLabel, legendColor);
+  }, [keyDef.label, keyDef.subLabel, legendColor]);
 
-  // Material
-  const material = useMemo(() => {
+  // Keycap Body PBR Material (PBT / ABS)
+  const bodyMaterial = useMemo(() => {
     const isPBT = materialParams.type === 'pbt';
     return new THREE.MeshPhysicalMaterial({
-      map: texture,
       color: new THREE.Color(topColor),
       roughness: isPBT ? 0.72 : 0.18,
       metalness: isPBT ? 0.04 : 0.05,
@@ -124,7 +143,7 @@ export const KeycapItem: React.FC<KeycapItemProps> = ({
       emissive: isSelected ? new THREE.Color('#38bdf8') : new THREE.Color('#000000'),
       emissiveIntensity: isSelected ? 0.45 : 0.0,
     });
-  }, [texture, topColor, materialParams, isSelected]);
+  }, [topColor, materialParams, isSelected]);
 
   // Smooth key depression animation (3.8mm mechanical travel)
   useFrame((_, delta) => {
@@ -135,19 +154,48 @@ export const KeycapItem: React.FC<KeycapItemProps> = ({
     meshRef.current.position.y = currentYRef.current;
   });
 
+  // Top decal size (in mm): fits the dished top area of the keycap
+  const decalW = Math.max(9.0, w - 4.5);
+  const decalD = Math.max(9.0, d - 4.5);
+
   return (
     <group position={[xPos, 0, zPos]}>
       <group ref={meshRef} onClick={onClick}>
-        <mesh geometry={geom} material={material} castShadow receiveShadow />
+        {/* Solid Keycap Body */}
+        <mesh geometry={geom} material={bodyMaterial} castShadow receiveShadow />
+
+        {/* Crisp High-Res Legend Decal */}
+        {legendTexture && (
+          <mesh
+            position={[0, topY, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+            renderOrder={5}
+          >
+            <planeGeometry args={[decalW, decalD]} />
+            <meshBasicMaterial
+              map={legendTexture}
+              transparent
+              opacity={0.96}
+              depthWrite={false}
+              polygonOffset
+              polygonOffsetFactor={-2}
+              polygonOffsetUnits={-2}
+            />
+          </mesh>
+        )}
+
         {/* Subtle Dish Concavity / Accent Highlight */}
-        <mesh position={[0, 4.4, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[Math.max(4, keyDef.unitWidth * 19.05 - 8), 10.0]} />
-          <meshBasicMaterial
-            color={isSelected ? '#38bdf8' : '#ffffff'}
-            transparent
-            opacity={isSelected ? 0.25 : 0.04}
-          />
-        </mesh>
+        {isSelected && (
+          <mesh position={[0, topY + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[decalW, decalD]} />
+            <meshBasicMaterial
+              color="#38bdf8"
+              transparent
+              opacity={0.25}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
       </group>
     </group>
   );
