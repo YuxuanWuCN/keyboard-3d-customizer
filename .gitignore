@@ -35,5 +35,6 @@ Thumbs.db
 # Gemini / Scratch artifacts
 .gemini/
 .agents/
+.vite/
 TEST_READY.md
 reports/

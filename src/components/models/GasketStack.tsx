@@ -11,6 +11,7 @@ import { KEYBOARD_LAYOUTS } from '../../constants/keyboardLayouts';
 import { THEME_PRESETS } from '../../constants/themePresets';
 import { KeycapItem } from './KeycapItem';
 import { InstancedSwitchArray } from './InstancedSwitchArray';
+import { StabilizerArray } from './StabilizerArray';
 
 interface GasketStackProps {
   model: KeyboardModelId;
@@ -406,6 +407,21 @@ export const GasketStack: React.FC<GasketStackProps> = ({
         upperY={switchUpperY}
         lowerY={switchLowerY}
         visible={showSwitches}
+      />
+
+      {/* ======================================================== */}
+      {/* LAYER 2.5: PCB SCREW-IN STABILIZERS (Large Keys >= 2U)  */}
+      {/* ======================================================== */}
+      <StabilizerArray
+        keyPositions={keyPositions}
+        activePressedKeys={activePressedKeys}
+        pcbY={pcbY}
+        plateY={plateY}
+        switchLowerY={switchLowerY}
+        switchUpperY={switchUpperY}
+        keycapsY={keycapsY}
+        visible={showSwitches || showPlate}
+        explodedProgress={explodedProgress}
       />
 
       {/* ======================================================== */}
