@@ -24,6 +24,7 @@ export const BottomTypingDock: React.FC = () => {
   const nextSamplePrompt = useKeyboardStore((s) => s.nextSamplePrompt);
   const switchType = useKeyboardStore((s) => s.switchType);
   const switchModel = useKeyboardStore((s) => s.switchModel);
+  const soundMode = useKeyboardStore((s) => s.soundMode);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -80,6 +81,11 @@ export const BottomTypingDock: React.FC = () => {
               <span className="text-slate-400">轴体:</span>
               <span className="font-bold text-amber-300">
                 {switchType === 'linear' ? '线性轴' : switchType === 'clicky' ? '有声段落' : '提前大段落'}
+              </span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded font-sans font-medium ${
+                soundMode === 'sampled' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
+              }`}>
+                {soundMode === 'sampled' ? '🎙️ 实录原声' : '⚡ 物理合成'}
               </span>
             </div>
           </div>

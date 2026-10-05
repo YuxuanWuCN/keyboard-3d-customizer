@@ -43,6 +43,7 @@ export interface KeyboardState {
   // Switches & Acoustics
   switchType: SwitchType;
   switchModel: SwitchModelId;
+  soundMode: 'sampled' | 'synth';
   volume: number;
   muted: boolean;
   foamDamping: boolean;
@@ -91,6 +92,7 @@ export interface KeyboardState {
 
   setSwitchType: (type: SwitchType) => void;
   setSwitchModel: (switchId: SwitchModelId) => void;
+  setSoundMode: (mode: 'sampled' | 'synth') => void;
   setVolume: (volume: number) => void;
   setMuted: (muted: boolean) => void;
   setFoamDamping: (enabled: boolean) => void;
@@ -154,6 +156,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
 
   switchType: 'linear',
   switchModel: 'cherry_red',
+  soundMode: 'sampled',
   volume: 0.8,
   muted: false,
   foamDamping: true,
@@ -377,6 +380,11 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     set({ switchModel, switchType });
   },
 
+  setSoundMode: (soundMode) => {
+    soundEngine.setSoundMode(soundMode);
+    set({ soundMode });
+  },
+
   setVolume: (volume) => {
     const clamped = Math.max(0, Math.min(1, volume));
     soundEngine.setVolume(clamped);
@@ -395,7 +403,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
 
   handleKeyDown: (code) => {
     const s = get();
-    soundEngine.playKeyDown(code, s.switchType, s.foamDamping);
+    soundEngine.playKeyDown(code, s.switchType, s.foamDamping, s.switchModel);
     set((state) => {
       if (state.activePressedKeys.includes(code)) return state;
       return { activePressedKeys: [...state.activePressedKeys, code] };
@@ -404,7 +412,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
 
   handleKeyUp: (code) => {
     const s = get();
-    soundEngine.playKeyUp(code, s.switchType, s.foamDamping);
+    soundEngine.playKeyUp(code, s.switchType, s.foamDamping, s.switchModel);
     set((state) => ({
       activePressedKeys: state.activePressedKeys.filter((c) => c !== code),
     }));
@@ -553,6 +561,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     soundEngine.setVolume(0.8);
     soundEngine.setMuted(false);
     soundEngine.setFoamDamping(true);
+    soundEngine.setSoundMode('sampled');
     set({
       model: 'eveningstar75',
       caseColor: '#1e2330',
@@ -572,6 +581,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
       keycapColorOverrides: {},
       switchType: 'linear',
       switchModel: 'cherry_red',
+      soundMode: 'sampled',
       foamDamping: true,
       volume: 0.8,
       muted: false,

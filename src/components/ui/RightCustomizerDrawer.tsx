@@ -142,6 +142,8 @@ export const RightCustomizerDrawer: React.FC = () => {
 
   const switchModel = useKeyboardStore((s) => s.switchModel);
   const setSwitchModel = useKeyboardStore((s) => s.setSwitchModel);
+  const soundMode = useKeyboardStore((s) => s.soundMode);
+  const setSoundMode = useKeyboardStore((s) => s.setSoundMode);
 
   const handleApplyColor = (color: string) => {
     setCustomHex(color);
@@ -773,9 +775,55 @@ export const RightCustomizerDrawer: React.FC = () => {
             {/* TAB 3: SWITCHES & ACOUSTICS */}
             {activeTab === 'switches' && (
               <div className="flex flex-col gap-3">
-                <div className="text-xs font-semibold text-slate-300">
-                  主流机械轴体手感与物理声学模拟
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-slate-300">
+                    主流机械轴体手感与物理声学
+                  </div>
+                  <span className="text-[10px] text-sky-400 font-mono">Hi-Fi Audio</span>
                 </div>
+
+                {/* Sound Engine Mode Switcher */}
+                <div className="flex flex-col gap-1.5 p-2.5 rounded-2xl bg-slate-800/70 border border-white/5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-300">声学校准音源模式</span>
+                    <span className="text-[10px] text-emerald-400 font-mono">● 44.1kHz Studio</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-900/80 border border-white/5">
+                    <button
+                      onClick={() => setSoundMode('sampled')}
+                      className={`py-1.5 px-2 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-all ${
+                        soundMode === 'sampled'
+                          ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <span>🎙️ 实录原声采样</span>
+                      <span className="text-[8px] px-1 rounded bg-black/30 font-mono">推荐</span>
+                    </button>
+                    <button
+                      onClick={() => setSoundMode('synth')}
+                      className={`py-1.5 px-2 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-all ${
+                        soundMode === 'synth'
+                          ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <span>⚡ 物理合成模拟</span>
+                    </button>
+                  </div>
+                  <div className="text-[10px] text-slate-400 leading-tight">
+                    {soundMode === 'sampled' ? (
+                      <span className="text-emerald-300/90">
+                        ✨ 采用客制化实录原声采样：含真实触底撞击（Downstroke）、顶盖回弹（Upstroke）与 5 阶轮循防重复机制，并经当前铝合金内胆与消音棉真实声学卷积滤波！
+                      </span>
+                    ) : (
+                      <span className="text-sky-300/90">
+                        ⚡ 采用纯 Web Audio 程序化双振荡器 + 1/f 粉红噪声冲激微积分模拟。
+                      </span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex flex-col gap-2">
                   {SWITCH_MODELS.map((sw) => {
                     const active = switchModel === sw.id;
@@ -821,10 +869,11 @@ export const RightCustomizerDrawer: React.FC = () => {
                 </div>
 
                 <div className="p-3 rounded-2xl bg-slate-800/40 border border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
-                  <span className="font-semibold text-slate-300">✨ 物理声学实时合成架构：</span>
-                  <span>• 程序化双振荡器 + 1/f 粉红噪声冲激碰撞</span>
-                  <span>• 真实冲激响应卷积（纯铝共振 vs Poron 吸音降噪）</span>
-                  <span>• 24 通道动态复音限制与 Tanh 软饱和防爆音</span>
+                  <span className="font-semibold text-slate-300">✨ 声学架构与物理内胆联动：</span>
+                  <span>• 触底与回弹双向物理微录音采样（Down & Up Stroke）</span>
+                  <span>• 5 阶 Round-Robin 算法（消除连续打字机关枪单调感）</span>
+                  <span>• 真实内胆冲激响应卷积（纯铝空腔共鸣 vs Poron 夹心消音）</span>
+                  <span>• 24 通道动态复音限制与 Tanh 软饱和防破音</span>
                 </div>
               </div>
             )}
