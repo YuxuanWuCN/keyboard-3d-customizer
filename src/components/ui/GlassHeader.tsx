@@ -74,6 +74,7 @@ export const GlassHeader: React.FC = () => {
   const models: { id: KeyboardModelId; name: string; tag: string }[] = [
     { id: 'eveningstar75', name: '晚星 75', tag: '75% • 82 键' },
     { id: 'mrsuit80', name: '北极星 80', tag: '80% • 六芒星限定' },
+    { id: 'bakeneko65', name: '化猫 65', tag: '65% • O-Ring开山之作' },
     { id: 'tofu60', name: '豆腐 60', tag: '60% • 61 键' },
   ];
 

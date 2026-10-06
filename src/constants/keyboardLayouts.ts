@@ -418,6 +418,118 @@ function buildMrSuit80Keys(): KeyDefinition[] {
 }
 
 // ==========================================
+// 4. Bakeneko 65 (67 Keys ANSI 65% Compact)
+// ==========================================
+function buildBakeneko65Keys(): KeyDefinition[] {
+  const keys: KeyDefinition[] = [];
+
+  // Row 0 (Number Row + Del) - 16U (15 keys)
+  const r0 = [
+    { code: 'Escape', label: 'ESC', subLabel: '`', w: 1.0, reg: 'accent', x: 0 },
+    { code: 'Digit1', label: '1', subLabel: '!', w: 1.0, reg: 'alphas', x: 1.0 },
+    { code: 'Digit2', label: '2', subLabel: '@', w: 1.0, reg: 'alphas', x: 2.0 },
+    { code: 'Digit3', label: '3', subLabel: '#', w: 1.0, reg: 'alphas', x: 3.0 },
+    { code: 'Digit4', label: '4', subLabel: '$', w: 1.0, reg: 'alphas', x: 4.0 },
+    { code: 'Digit5', label: '5', subLabel: '%', w: 1.0, reg: 'alphas', x: 5.0 },
+    { code: 'Digit6', label: '6', subLabel: '^', w: 1.0, reg: 'alphas', x: 6.0 },
+    { code: 'Digit7', label: '7', subLabel: '&', w: 1.0, reg: 'alphas', x: 7.0 },
+    { code: 'Digit8', label: '8', subLabel: '*', w: 1.0, reg: 'alphas', x: 8.0 },
+    { code: 'Digit9', label: '9', subLabel: '(', w: 1.0, reg: 'alphas', x: 9.0 },
+    { code: 'Digit0', label: '0', subLabel: ')', w: 1.0, reg: 'alphas', x: 10.0 },
+    { code: 'Minus', label: '-', subLabel: '_', w: 1.0, reg: 'alphas', x: 11.0 },
+    { code: 'Equal', label: '=', subLabel: '+', w: 1.0, reg: 'alphas', x: 12.0 },
+    { code: 'Backspace', label: 'BACKSPACE', w: 2.0, reg: 'modifiers', x: 13.0 },
+    { code: 'Delete', label: 'DEL', w: 1.0, reg: 'nav', x: 15.0 },
+  ];
+  r0.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 0, k.x, 0, k.reg as any, 'R1'));
+  });
+
+  // Row 1 (QWERTY + PgUp) - 16U (15 keys)
+  const r1 = [
+    { code: 'Tab', label: 'TAB', w: 1.5, reg: 'modifiers', x: 0 },
+    { code: 'KeyQ', label: 'Q', w: 1.0, reg: 'alphas', x: 1.5 },
+    { code: 'KeyW', label: 'W', w: 1.0, reg: 'alphas', x: 2.5 },
+    { code: 'KeyE', label: 'E', w: 1.0, reg: 'alphas', x: 3.5 },
+    { code: 'KeyR', label: 'R', w: 1.0, reg: 'alphas', x: 4.5 },
+    { code: 'KeyT', label: 'T', w: 1.0, reg: 'alphas', x: 5.5 },
+    { code: 'KeyY', label: 'Y', w: 1.0, reg: 'alphas', x: 6.5 },
+    { code: 'KeyU', label: 'U', w: 1.0, reg: 'alphas', x: 7.5 },
+    { code: 'KeyI', label: 'I', w: 1.0, reg: 'alphas', x: 8.5 },
+    { code: 'KeyO', label: 'O', w: 1.0, reg: 'alphas', x: 9.5 },
+    { code: 'KeyP', label: 'P', w: 1.0, reg: 'alphas', x: 10.5 },
+    { code: 'BracketLeft', label: '[', subLabel: '{', w: 1.0, reg: 'alphas', x: 11.5 },
+    { code: 'BracketRight', label: ']', subLabel: '}', w: 1.0, reg: 'alphas', x: 12.5 },
+    { code: 'Backslash', label: '\\', subLabel: '|', w: 1.5, reg: 'alphas', x: 13.5 },
+    { code: 'PageUp', label: 'PGUP', w: 1.0, reg: 'nav', x: 15.0 },
+  ];
+  r1.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 1, k.x, 1.0, k.reg as any, 'R2'));
+  });
+
+  // Row 2 (ASDF + PgDn) - 16U (14 keys)
+  const r2 = [
+    { code: 'CapsLock', label: 'CAPS', w: 1.75, reg: 'modifiers', x: 0 },
+    { code: 'KeyA', label: 'A', w: 1.0, reg: 'alphas', x: 1.75 },
+    { code: 'KeyS', label: 'S', w: 1.0, reg: 'alphas', x: 2.75 },
+    { code: 'KeyD', label: 'D', w: 1.0, reg: 'alphas', x: 3.75 },
+    { code: 'KeyF', label: 'F', w: 1.0, reg: 'alphas', x: 4.75 },
+    { code: 'KeyG', label: 'G', w: 1.0, reg: 'alphas', x: 5.75 },
+    { code: 'KeyH', label: 'H', w: 1.0, reg: 'alphas', x: 6.75 },
+    { code: 'KeyJ', label: 'J', w: 1.0, reg: 'alphas', x: 7.75 },
+    { code: 'KeyK', label: 'K', w: 1.0, reg: 'alphas', x: 8.75 },
+    { code: 'KeyL', label: 'L', w: 1.0, reg: 'alphas', x: 9.75 },
+    { code: 'Semicolon', label: ';', subLabel: ':', w: 1.0, reg: 'alphas', x: 10.75 },
+    { code: 'Quote', label: '\'', subLabel: '"', w: 1.0, reg: 'alphas', x: 11.75 },
+    { code: 'Enter', label: 'ENTER', w: 2.25, reg: 'accent', x: 12.75 },
+    { code: 'PageDown', label: 'PGDN', w: 1.0, reg: 'nav', x: 15.0 },
+  ];
+  r2.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 2, k.x, 2.0, k.reg as any, 'R3'));
+  });
+
+  // Row 3 (ZXCV + Up + End) - 16U (14 keys)
+  const r3 = [
+    { code: 'ShiftLeft', label: 'SHIFT', w: 2.25, reg: 'modifiers', x: 0 },
+    { code: 'KeyZ', label: 'Z', w: 1.0, reg: 'alphas', x: 2.25 },
+    { code: 'KeyX', label: 'X', w: 1.0, reg: 'alphas', x: 3.25 },
+    { code: 'KeyC', label: 'C', w: 1.0, reg: 'alphas', x: 4.25 },
+    { code: 'KeyV', label: 'V', w: 1.0, reg: 'alphas', x: 5.25 },
+    { code: 'KeyB', label: 'B', w: 1.0, reg: 'alphas', x: 6.25 },
+    { code: 'KeyN', label: 'N', w: 1.0, reg: 'alphas', x: 7.25 },
+    { code: 'KeyM', label: 'M', w: 1.0, reg: 'alphas', x: 8.25 },
+    { code: 'Comma', label: ',', subLabel: '<', w: 1.0, reg: 'alphas', x: 9.25 },
+    { code: 'Period', label: '.', subLabel: '>', w: 1.0, reg: 'alphas', x: 10.25 },
+    { code: 'Slash', label: '/', subLabel: '?', w: 1.0, reg: 'alphas', x: 11.25 },
+    { code: 'ShiftRight', label: 'SHIFT', w: 1.75, reg: 'modifiers', x: 12.25 },
+    { code: 'ArrowUp', label: '▲', w: 1.0, reg: 'nav', x: 14.0 },
+    { code: 'End', label: 'END', w: 1.0, reg: 'nav', x: 15.0 },
+  ];
+  r3.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 3, k.x, 3.0, k.reg as any, 'R4'));
+  });
+
+  // Row 4 (Bottom Row + Left/Down/Right) - 16U (9 keys with 0.5U blocker)
+  const r4 = [
+    { code: 'ControlLeft', label: 'CTRL', w: 1.25, reg: 'modifiers', x: 0 },
+    { code: 'MetaLeft', label: 'WIN', w: 1.25, reg: 'modifiers', x: 1.25 },
+    { code: 'AltLeft', label: 'ALT', w: 1.25, reg: 'modifiers', x: 2.5 },
+    { code: 'Space', label: '', w: 6.25, reg: 'accent', x: 3.75 },
+    { code: 'AltRight', label: 'ALT', w: 1.25, reg: 'modifiers', x: 10.0 },
+    { code: 'Fn', label: 'FN', w: 1.25, reg: 'modifiers', x: 11.25 },
+    // 0.5U blocker gap (12.5 to 13.0)
+    { code: 'ArrowLeft', label: '◄', w: 1.0, reg: 'nav', x: 13.0 },
+    { code: 'ArrowDown', label: '▼', w: 1.0, reg: 'nav', x: 14.0 },
+    { code: 'ArrowRight', label: '►', w: 1.0, reg: 'nav', x: 15.0 },
+  ];
+  r4.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, undefined, k.w, 4, k.x, 4.0, k.reg as any, 'R4'));
+  });
+
+  return keys;
+}
+
+// ==========================================
 // Layout Definitions Registry
 // ==========================================
 export const KEYBOARD_LAYOUTS: Record<KeyboardModelId, KeyboardLayoutDefinition> = {
@@ -462,5 +574,19 @@ export const KEYBOARD_LAYOUTS: Record<KeyboardModelId, KeyboardLayoutDefinition>
       bezelWidth: 7.0,
     },
     keys: buildTofu60Keys(),
+  },
+  bakeneko65: {
+    model: 'bakeneko65',
+    name: 'Bakeneko 65 (化猫 65)',
+    keyCount: 67,
+    dimensions: {
+      width: 315.0,
+      depth: 112.0,
+      frontHeight: 18.2,
+      rearHeight: 31.8,
+      typingAngleDeg: 6.0,
+      bezelWidth: 4.8,
+    },
+    keys: buildBakeneko65Keys(),
   },
 };

@@ -1,4 +1,4 @@
-export type KeyboardModelId = 'eveningstar75' | 'mrsuit80' | 'tofu60';
+export type KeyboardModelId = 'eveningstar75' | 'mrsuit80' | 'tofu60' | 'bakeneko65';
 
 export type GasketLayerId =
   | 'keycaps'

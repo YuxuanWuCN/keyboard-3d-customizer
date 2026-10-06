@@ -35,6 +35,8 @@ export function generateSyntheticImpulseResponse(
       ? 980
       : caseModel === 'mrsuit80'
       ? 620
+      : caseModel === 'bakeneko65'
+      ? 840
       : 720; // eveningstar75
 
   const resonanceStrength = hasFoam ? 0.06 : 0.28;

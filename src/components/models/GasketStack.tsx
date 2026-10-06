@@ -432,13 +432,38 @@ export const GasketStack: React.FC<GasketStackProps> = ({
         <group position={[0, plateY, 0]}>
           <mesh geometry={plateGeom} material={plateMat} castShadow receiveShadow />
 
-          {/* Silicone Gasket Dampers (Socks) on Perimeter Tabs */}
-          {gasketTabs.map((tab, idx) => (
-            <mesh key={`tab-${idx}`} position={[tab.x, 0, tab.z]}>
-              <boxGeometry args={[tab.w, 2.4, tab.d]} />
-              <primitive object={siliconeTabMat} attach="material" />
-            </mesh>
-          ))}
+          {/* Traditional Silicone Gasket Dampers (Socks) on Perimeter Tabs */}
+          {model !== 'bakeneko65' &&
+            gasketTabs.map((tab, idx) => (
+              <mesh key={`tab-${idx}`} position={[tab.x, 0, tab.z]}>
+                <boxGeometry args={[tab.w, 2.4, tab.d]} />
+                <primitive object={siliconeTabMat} attach="material" />
+              </mesh>
+            ))}
+
+          {/* Bakeneko 65: Legendary Continuous Silicone O-Ring Gasket */}
+          {model === 'bakeneko65' && (
+            <group>
+              {/* Top & Bottom O-Ring cords */}
+              <mesh position={[0, 0, -(matrixD + 2.0) / 2 - 1.2]} rotation={[0, 0, Math.PI / 2]}>
+                <cylinderGeometry args={[1.5, 1.5, matrixW + 6.0, 16]} />
+                <primitive object={siliconeTabMat} attach="material" />
+              </mesh>
+              <mesh position={[0, 0, (matrixD + 2.0) / 2 + 1.2]} rotation={[0, 0, Math.PI / 2]}>
+                <cylinderGeometry args={[1.5, 1.5, matrixW + 6.0, 16]} />
+                <primitive object={siliconeTabMat} attach="material" />
+              </mesh>
+              {/* Left & Right O-Ring cords */}
+              <mesh position={[-(matrixW + 2.0) / 2 - 1.2, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <cylinderGeometry args={[1.5, 1.5, matrixD + 2.0, 16]} />
+                <primitive object={siliconeTabMat} attach="material" />
+              </mesh>
+              <mesh position={[(matrixW + 2.0) / 2 + 1.2, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <cylinderGeometry args={[1.5, 1.5, matrixD + 2.0, 16]} />
+                <primitive object={siliconeTabMat} attach="material" />
+              </mesh>
+            </group>
+          )}
         </group>
       )}
 

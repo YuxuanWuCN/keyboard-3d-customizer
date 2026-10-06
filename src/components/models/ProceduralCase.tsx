@@ -252,6 +252,81 @@ function createPolarisGoldBorderTexture(): THREE.CanvasTexture {
   return texture;
 }
 
+// Procedural Canvas Texture for Bakeneko 65 Solid Brass Underside Weight ("化猫" / Bakeneko 65)
+function createBakenekoWeightTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d')!;
+
+  // 1. Brushed Brass metallic gradient background
+  const grad = ctx.createLinearGradient(0, 0, 1024, 256);
+  grad.addColorStop(0.0, '#b45309');
+  grad.addColorStop(0.2, '#d97706');
+  grad.addColorStop(0.5, '#f59e0b');
+  grad.addColorStop(0.8, '#d97706');
+  grad.addColorStop(1.0, '#92400e');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1024, 256);
+
+  // Micro brushed metallic lines
+  ctx.strokeStyle = 'rgba(254, 240, 138, 0.18)';
+  ctx.lineWidth = 1;
+  for (let y = 0; y < 256; y += 3) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(1024, y);
+    ctx.stroke();
+  }
+
+  // Polished gold outer and inner chamfer borders
+  ctx.strokeStyle = '#fef08a';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(8, 8, 1008, 240);
+  ctx.strokeStyle = '#713f12';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(12, 12, 1000, 232);
+
+  // 2. Large Iconic Japanese Kanji: "化 猫" (Bakeneko)
+  ctx.save();
+  ctx.font = '900 64px "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Laser deep shadow
+  ctx.fillStyle = '#451a03';
+  ctx.fillText('化   猫', 512 + 2, 80 + 2);
+  // Brilliant face
+  ctx.fillStyle = '#fef9c3';
+  ctx.fillText('化   猫', 512, 80);
+  ctx.restore();
+
+  // 3. Cat Paw & English Title
+  ctx.save();
+  ctx.font = 'bold 30px "Segoe UI", Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#451a03';
+  ctx.fillText('🐾   BAKENEKO 65   🐾', 512 + 1, 142 + 1);
+  ctx.fillStyle = '#fef08a';
+  ctx.fillText('🐾   BAKENEKO 65   🐾', 512, 142);
+  ctx.restore();
+
+  // 4. Open-Source Hardware Heritage Engraving
+  ctx.save();
+  ctx.font = 'bold 15px "Segoe UI", monospace, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#713f12';
+  ctx.fillText('O-RING GASKET MOUNT • CERN OHL-S V2 • DESIGNED BY KKATANO', 512, 196);
+  ctx.fillText('UNIFIED DAUGHTERBOARD (UDB) COMPLIANT • 067/065', 512, 220);
+  ctx.restore();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.anisotropy = 16;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 // Procedural Canvas Texture for Polaris 80 Front Nameplate ("🌈 Polaris ★ !")
 function createPolarisNameplateTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
@@ -385,6 +460,8 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     weightMaterial === 'polaris_hexagram' ||
     (model === 'mrsuit80' && !isRx78);
 
+  const isBakeneko = model === 'bakeneko65';
+
   const t = cubicEase(explodedProgress);
   // Exploded offsets (in mm) calibrated for solid CNC case wrapping and clear explosion
   const topCaseY = 10.0 + 60.0 * t;
@@ -401,6 +478,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
   const rx78Texture = useMemo(() => createRx78BackplateTexture(), []);
   const polarisGoldTexture = useMemo(() => createPolarisGoldBorderTexture(), []);
   const polarisNameplateTexture = useMemo(() => createPolarisNameplateTexture(), []);
+  const bakenekoWeightTexture = useMemo(() => createBakenekoWeightTexture(), []);
 
   // Animatable Material and Light Refs
   const leftLightRef = useRef<THREE.MeshStandardMaterial>(null);
@@ -632,6 +710,9 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     if (model === 'tofu60') {
       innerW = 290.0;
       innerD = 98.0;
+    } else if (model === 'bakeneko65') {
+      innerW = 308.0;
+      innerD = 99.0;
     } else if (model === 'eveningstar75') {
       innerW = 313.5;
       innerD = 118.5;
@@ -640,7 +721,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
       innerD = 124.0;
     }
 
-    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'eveningstar75' ? 1.5 : 0.4;
+    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'bakeneko65' ? 3.2 : model === 'eveningstar75' ? 1.5 : 0.4;
     const outerShape = createRoundedRectShape(W, D, cornerR);
 
     // Inner cavity cutout for plate and key switches
@@ -658,9 +739,9 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
       depth: 16.0,
       bevelEnabled: true,
-      bevelThickness: model === 'tofu60' ? 0.6 : 1.0,
-      bevelSize: model === 'tofu60' ? 0.6 : 1.0,
-      bevelSegments: model === 'mrsuit80' ? 4 : 2,
+      bevelThickness: model === 'tofu60' ? 0.6 : model === 'bakeneko65' ? 0.8 : 1.0,
+      bevelSize: model === 'tofu60' ? 0.6 : model === 'bakeneko65' ? 0.8 : 1.0,
+      bevelSegments: model === 'mrsuit80' || model === 'bakeneko65' ? 4 : 2,
     };
 
     const geom = new THREE.ExtrudeGeometry(outerShape, extrudeSettings);
@@ -676,6 +757,9 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     if (model === 'tofu60') {
       innerW = 294.0;
       innerD = 102.0;
+    } else if (model === 'bakeneko65') {
+      innerW = 311.0;
+      innerD = 102.0;
     } else if (model === 'eveningstar75') {
       innerW = 316.0;
       innerD = 122.0;
@@ -684,7 +768,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
       innerD = 126.0;
     }
 
-    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'eveningstar75' ? 1.5 : 0.4;
+    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'bakeneko65' ? 3.2 : model === 'eveningstar75' ? 1.5 : 0.4;
     const outerShape = createRoundedRectShape(W - 0.5, D - 0.5, cornerR);
 
     const innerCavity = new THREE.Path();
@@ -710,7 +794,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
 
   // Bottom Base Plate
   const bottomBasePlateGeom = useMemo(() => {
-    const cornerR = model === 'mrsuit80' ? 4.0 : model === 'eveningstar75' ? 1.2 : 0.2;
+    const cornerR = model === 'mrsuit80' ? 4.0 : model === 'bakeneko65' ? 2.8 : model === 'eveningstar75' ? 1.2 : 0.2;
     const shape = createRoundedRectShape(W - 1.2, D - 1.2, cornerR);
     const geom = new THREE.ExtrudeGeometry(shape, { depth: 2.2, bevelEnabled: false });
     geom.rotateX(Math.PI / 2);
@@ -808,7 +892,21 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
 
   // Weight Geometry specific to model (default when not custom edition)
   const weightGeom = useMemo(() => {
-    if (model === 'eveningstar75') {
+    if (model === 'bakeneko65') {
+      const weightW = 214.0;
+      const weightD = 52.0;
+      const shape = createRoundedRectShape(weightW, weightD, 2.5);
+      const geom = new THREE.ExtrudeGeometry(shape, {
+        depth: 3.4,
+        bevelEnabled: true,
+        bevelThickness: 0.5,
+        bevelSize: 0.5,
+        bevelSegments: 2,
+      });
+      geom.rotateX(Math.PI / 2);
+      geom.center();
+      return geom;
+    } else if (model === 'eveningstar75') {
       const weightW = 240.0;
       const weightD = 78.0;
       const shape = new THREE.Shape();
@@ -1256,7 +1354,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
           <mesh position={[0, -2.9, 0]} geometry={bottomBasePlateGeom} material={caseMat} receiveShadow />
 
           {/* Standard rubber non-slip feet */}
-          {!isRx78 && !isPolaris && (
+          {!isRx78 && !isPolaris && !isBakeneko && (
             <>
               <mesh position={[-W / 2 + 25.0, -5.3, -D / 2 + 15.0]}>
                 <boxGeometry args={[24.0, 1.6, 6.0]} />
@@ -1274,6 +1372,43 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
                 <boxGeometry args={[24.0, 1.6, 6.0]} />
                 <meshStandardMaterial color="#1f2937" roughness={0.95} />
               </mesh>
+            </>
+          )}
+
+          {/* Bakeneko 65: 4 Circular Bump-on Silicone Feet & Unified Daughterboard (UDB) Recess */}
+          {isBakeneko && (
+            <>
+              {[-W / 2 + 20.0, W / 2 - 20.0].map((fx, i) =>
+                [-D / 2 + 14.0, D / 2 - 14.0].map((fz, j) => (
+                  <mesh key={`bakeneko-foot-${i}-${j}`} position={[fx, -5.2, fz]}>
+                    <cylinderGeometry args={[4.0, 4.6, 1.8, 20]} />
+                    <primitive object={rubberFootMat} attach="material" />
+                  </mesh>
+                ))
+              )}
+              {/* Unified Daughterboard (UDB) Type-C Recessed Pocket & JST Connection Trough */}
+              <group position={[0, -4.5, -D / 2 + 12.0]}>
+                {/* CNC Recessed Cutout */}
+                <mesh position={[0, 0, 0]}>
+                  <boxGeometry args={[26.0, 2.8, 14.0]} />
+                  <meshStandardMaterial color="#0b0f19" roughness={0.7} />
+                </mesh>
+                {/* UDB Green Matte PCB Plate */}
+                <mesh position={[0, 0.4, 0]}>
+                  <boxGeometry args={[22.0, 0.8, 11.0]} />
+                  <meshStandardMaterial color="#047857" roughness={0.4} metalness={0.2} />
+                </mesh>
+                {/* Silver Type-C Port Shell */}
+                <mesh position={[0, 0.8, -4.5]}>
+                  <boxGeometry args={[9.5, 3.2, 7.5]} />
+                  <meshStandardMaterial color="#cbd5e1" metalness={0.9} roughness={0.15} />
+                </mesh>
+                {/* 4-Pin JST Connector */}
+                <mesh position={[0, 0.8, 3.2]}>
+                  <boxGeometry args={[7.2, 2.2, 3.8]} />
+                  <meshStandardMaterial color="#f8fafc" roughness={0.6} />
+                </mesh>
+              </group>
             </>
           )}
 
@@ -1589,6 +1724,41 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
                     <mesh position={[0, -0.42, 0]}>
                       <cylinderGeometry args={[0.7, 0.7, 0.3, 6]} />
                       <meshStandardMaterial color="#78350f" roughness={0.8} />
+                    </mesh>
+                  </group>
+                ))
+              )}
+            </group>
+          ) : isBakeneko ? (
+            /* Bakeneko 65: Solid CNC Brass Weight with "化猫" Laser Engraving */
+            <group>
+              <mesh geometry={weightGeom} material={polarisGoldBorderMat} castShadow receiveShadow />
+
+              {/* High-DPI "化猫" Bakeneko Engraving Decal */}
+              <mesh position={[0, -2.15, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[214.0, 52.0]} />
+                <meshStandardMaterial
+                  map={bakenekoWeightTexture}
+                  roughness={0.18}
+                  metalness={0.88}
+                  transparent
+                  opacity={0.99}
+                  depthWrite={false}
+                  side={THREE.DoubleSide}
+                />
+              </mesh>
+
+              {/* 4 Corner Countersunk Retention Screws */}
+              {[-98.0, 98.0].map((sx, i) =>
+                [-18.0, 18.0].map((sz, j) => (
+                  <group key={`bakeneko-screw-${i}-${j}`} position={[sx, -2.18, sz]}>
+                    <mesh>
+                      <cylinderGeometry args={[1.6, 1.6, 0.6, 16]} />
+                      <meshStandardMaterial color="#78350f" roughness={0.6} metalness={0.8} />
+                    </mesh>
+                    <mesh position={[0, -0.32, 0]}>
+                      <cylinderGeometry args={[0.6, 0.6, 0.3, 6]} />
+                      <meshStandardMaterial color="#1e293b" roughness={0.9} />
                     </mesh>
                   </group>
                 ))

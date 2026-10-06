@@ -202,6 +202,8 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
           ? '#1e2330'
           : model === 'mrsuit80'
           ? '#2b2d38'
+          : model === 'bakeneko65'
+          ? '#18181b'
           : '#383b42',
     });
   },

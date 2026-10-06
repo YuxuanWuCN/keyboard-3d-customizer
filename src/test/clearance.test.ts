@@ -136,6 +136,7 @@ describe('Dimensional Fit & Cavity Non-Interference Verification', () => {
     tofu60: { innerW: 290.0, innerD: 98.0, chamberW: 294.0, chamberD: 102.0 },
     eveningstar75: { innerW: 313.5, innerD: 118.5, chamberW: 316.0, chamberD: 122.0 },
     mrsuit80: { innerW: 356.5, innerD: 124.0, chamberW: 358.5, chamberD: 126.0 },
+    bakeneko65: { innerW: 308.0, innerD: 99.0, chamberW: 311.0, chamberD: 102.0 },
   };
 
   models.forEach((model) => {
