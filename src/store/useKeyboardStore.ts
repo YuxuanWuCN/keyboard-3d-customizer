@@ -10,7 +10,7 @@ import {
   CameraPreset,
   KeyboardConfigV1,
 } from '../types/keyboard';
-import { THEME_PRESETS, GUNDAM_RX78_PRESET } from '../constants/themePresets';
+import { THEME_PRESETS, GUNDAM_RX78_PRESET, POLARIS_CANDY_PRESET } from '../constants/themePresets';
 import { KEYBOARD_LAYOUTS } from '../constants/keyboardLayouts';
 import { soundEngine } from '../audio/ProceduralSoundEngine';
 import { calculateTelemetry, getRandomPrompt, SAMPLE_TYPING_PROMPTS } from '../utils/telemetry';
@@ -21,11 +21,13 @@ export interface KeyboardState {
   model: KeyboardModelId;
   caseColor: string;
   caseFinish: 'anodized' | 'e_white' | 'raw_alu';
-  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold' | 'rx78_mecha';
+  weightMaterial: 'brass_pvd' | 'mirror_chroma' | 'matte_black' | 'anodized_gold' | 'rx78_mecha' | 'polaris_hexagram';
   explodedProgress: number; // 0.0 to 1.0
   isolatedLayer: GasketLayerId | null;
   layerVisibility: Record<GasketLayerId, boolean>;
   rx78Edition: boolean;
+  polarisEdition: boolean;
+  polarisNumpad: boolean;
   cableVisible: boolean;
   cableStyle: 'coiled' | 'straight';
   cableColor: string;
@@ -73,12 +75,15 @@ export interface KeyboardState {
   toggleLayerVisibility: (layer: GasketLayerId) => void;
   setAllLayersVisible: () => void;
   setRx78Edition: (enabled: boolean) => void;
+  setPolarisEdition: (enabled: boolean) => void;
+  setPolarisNumpad: (enabled: boolean) => void;
   setCableVisible: (visible: boolean) => void;
   setCableStyle: (style: 'coiled' | 'straight') => void;
   setCableColor: (color: string) => void;
   setCableLedColor: (color: string) => void;
   setCableConnectorMaterial: (mat: 'chrome' | 'matte_black' | 'brass_gold') => void;
   applyRx78GundamTheme: () => void;
+  applyPolarisTheme: () => void;
 
   selectKey: (keyId: string, multiSelect?: boolean) => void;
   selectRegion: (region: KeyRegion | 'all' | 'accents_batch') => void;
@@ -135,6 +140,8 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
   isolatedLayer: null,
   layerVisibility: { ...defaultLayers },
   rx78Edition: false,
+  polarisEdition: false,
+  polarisNumpad: false,
   cableVisible: true,
   cableStyle: 'coiled',
   cableColor: '#2563eb',
@@ -245,6 +252,58 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     get().applyPresetTheme('gundam_rx78');
   },
 
+  setPolarisEdition: (enabled) => set({ polarisEdition: enabled }),
+  setPolarisNumpad: (enabled) => set({ polarisNumpad: enabled }),
+  applyPolarisTheme: () => {
+    set({
+      model: 'mrsuit80',
+      caseColor: '#F8B4C4',
+      caseFinish: 'anodized',
+      weightMaterial: 'polaris_hexagram',
+      polarisEdition: true,
+      cableVisible: true,
+      cableStyle: 'coiled',
+      cableColor: '#F472B6',
+      cableLedColor: '#A594F9',
+      cableConnectorMaterial: 'brass_gold',
+      activePresetTheme: 'polaris_candy',
+      keycapColorOverrides: {},
+    });
+    get().applyPresetTheme('polaris_candy');
+
+    // Custom exact key overrides for Polaris candy layout from photos
+    const layout = KEYBOARD_LAYOUTS['mrsuit80'];
+    const overrides: Record<string, string> = { ...get().keycapColorOverrides };
+
+    layout.keys.forEach((key) => {
+      if (key.region === 'alphas') {
+        overrides[key.id] = '#FBF9F5';
+      }
+      if (key.code === 'Escape') overrides[key.id] = '#F472B6';
+      if (key.code === 'Enter') overrides[key.id] = '#5EEAD4';
+      if (key.code === 'Space') overrides[key.id] = '#FBF9F5';
+      if (key.code === 'Backspace') overrides[key.id] = '#A594F9';
+      if (['F1', 'F2', 'F3', 'F4', 'F9', 'F10', 'F11', 'F12'].includes(key.code)) {
+        overrides[key.id] = '#FBF9F5';
+      }
+      if (['F5', 'F6', 'F7', 'F8'].includes(key.code)) {
+        overrides[key.id] = '#A594F9';
+      }
+      if (key.code === 'ControlLeft') overrides[key.id] = '#FDE047';
+      if (key.code === 'MetaLeft') overrides[key.id] = '#F472B6';
+      if (key.code === 'AltLeft') overrides[key.id] = '#5EEAD4';
+      if (key.code === 'AltRight') overrides[key.id] = '#5EEAD4';
+      if (key.code === 'MetaRight' || key.code === 'ContextMenu') overrides[key.id] = '#F472B6';
+      if (key.code === 'ControlRight') overrides[key.id] = '#FDE047';
+      if (key.code === 'ArrowUp') overrides[key.id] = '#A594F9';
+      if (key.code === 'ArrowDown') overrides[key.id] = '#FDE047';
+      if (key.code === 'ArrowLeft') overrides[key.id] = '#F472B6';
+      if (key.code === 'ArrowRight') overrides[key.id] = '#5EEAD4';
+    });
+
+    set({ keycapColorOverrides: overrides });
+  },
+
   selectKey: (keyId, multiSelect = false) => {
     set((state) => {
       if (!multiSelect) {
@@ -334,7 +393,7 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
     }),
 
   applyPresetTheme: (themeId) => {
-    const theme = THEME_PRESETS[themeId] || (themeId === 'gundam_rx78' ? GUNDAM_RX78_PRESET : null);
+    const theme = THEME_PRESETS[themeId] || (themeId === 'gundam_rx78' ? GUNDAM_RX78_PRESET : themeId === 'polaris_candy' ? POLARIS_CANDY_PRESET : null);
     if (!theme) return;
     const layout = KEYBOARD_LAYOUTS[get().model];
     const overrides: Record<string, string> = {};
@@ -571,6 +630,8 @@ export const useKeyboardStore = create<KeyboardState>((set, get) => ({
       isolatedLayer: null,
       layerVisibility: { ...defaultLayers },
       rx78Edition: false,
+      polarisEdition: false,
+      polarisNumpad: false,
       cableVisible: true,
       cableStyle: 'coiled',
       cableColor: '#2563eb',

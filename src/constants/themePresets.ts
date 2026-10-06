@@ -123,3 +123,20 @@ export const GUNDAM_RX78_PRESET: KeycapThemePreset = {
   recommendedWeight: 'rx78_mecha',
   defaultMaterial: 'pbt'
 };
+
+export const POLARIS_CANDY_PRESET: KeycapThemePreset = {
+  id: 'polaris_candy',
+  name: '北极星 Polaris 80 魔法糖果限定 (Polaris Candy)',
+  description: '温润香草奶白字母区，梦幻丁香紫修饰键，薄荷柔绿与蜜桃粉、向日葵黄个性跳色，致敬北极星复古掌机限定版。',
+  designer: 'Polaris Custom Studio',
+  palette: {
+    alphas: { top: '#FBF9F5', legend: '#4C1D95' },
+    modifiers: { top: '#A594F9', legend: '#FFFFFF' },
+    accents: { top: '#5EEAD4', legend: '#0F172A' },
+    spacebar: { top: '#FBF9F5', legend: '#4C1D95' }
+  },
+  recommendedCase: '#F8B4C4',
+  recommendedWeight: 'polaris_hexagram',
+  defaultMaterial: 'pbt'
+};
+

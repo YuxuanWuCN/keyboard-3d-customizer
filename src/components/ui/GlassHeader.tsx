@@ -34,6 +34,8 @@ export const GlassHeader: React.FC = () => {
   const cableVisible = useKeyboardStore((s) => s.cableVisible);
   const setCableVisible = useKeyboardStore((s) => s.setCableVisible);
   const cableLedColor = useKeyboardStore((s) => s.cableLedColor);
+  const polarisNumpad = useKeyboardStore((s) => s.polarisNumpad);
+  const setPolarisNumpad = useKeyboardStore((s) => s.setPolarisNumpad);
 
   const [audioMenuOpen, setAudioMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +73,7 @@ export const GlassHeader: React.FC = () => {
 
   const models: { id: KeyboardModelId; name: string; tag: string }[] = [
     { id: 'eveningstar75', name: '晚星 75', tag: '75% • 82 键' },
-    { id: 'mrsuit80', name: '西装 80', tag: '80% • 87 键' },
+    { id: 'mrsuit80', name: '北极星 80', tag: '80% • 六芒星限定' },
     { id: 'tofu60', name: '豆腐 60', tag: '60% • 61 键' },
   ];
 
@@ -162,6 +164,20 @@ export const GlassHeader: React.FC = () => {
             style={{ color: cableLedColor, backgroundColor: cableLedColor }}
           />
           <span className="font-semibold">{cableVisible ? '航插线: 已接' : '航插线: 断开'}</span>
+        </button>
+
+        {/* Companion Numpad Quick Toggle Button */}
+        <button
+          onClick={() => setPolarisNumpad(!polarisNumpad)}
+          className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+            polarisNumpad
+              ? 'bg-pink-500/20 text-pink-300 border border-pink-400/30 shadow-sm shadow-pink-500/10'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
+          }`}
+          title={polarisNumpad ? '隐藏 17-Key 伴侣小键盘' : '显示配套 17-Key 伴侣小键盘'}
+        >
+          <span className="text-[11px]">🎮</span>
+          <span className="font-semibold">{polarisNumpad ? '伴侣小键盘: 开' : '小键盘: 关'}</span>
         </button>
 
         {/* Audio Acoustics Control Popover */}

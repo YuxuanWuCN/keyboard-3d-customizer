@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useKeyboardStore } from '../../store/useKeyboardStore';
-import { THEME_PRESETS } from '../../constants/themePresets';
+import { THEME_PRESETS, POLARIS_CANDY_PRESET } from '../../constants/themePresets';
 import { SwitchModelId, SwitchType } from '../../types/keyboard';
 import {
   Palette,
@@ -81,6 +81,7 @@ const SWITCH_MODELS: SwitchItem[] = [
 ];
 
 const CASE_COLOR_PRESETS = [
+  { name: '北极星樱花粉', en: 'Sakura Pink', hex: '#F8B4C4', finish: 'anodized' as const },
   { name: '高达电光蓝', en: 'Gundam Blue', hex: '#1D4ED8', finish: 'anodized' as const },
   { name: '晚星阳极冰银', en: 'Silver', hex: '#C5CCD6', finish: 'anodized' as const },
   { name: '电泳极白', en: 'E-White', hex: '#F4F4F6', finish: 'e_white' as const },
@@ -95,6 +96,7 @@ const CASE_COLOR_PRESETS = [
 ];
 
 const WEIGHT_PRESETS = [
+  { id: 'polaris_hexagram' as const, name: '北极星六芒星 PVD', tag: '双层立体勋章', color: '#F472B6' },
   { id: 'rx78_mecha' as const, name: '高达 RX-78 浮雕背板', tag: '双层立体机甲', color: '#0891B2' },
   { id: 'brass_pvd' as const, name: 'PVD 镜面黄铜', tag: '高光金色', color: '#D4AF37' },
   { id: 'mirror_chroma' as const, name: 'PVD 极光炫彩', tag: '流光幻彩', color: '#93C5FD' },
@@ -129,6 +131,9 @@ export const RightCustomizerDrawer: React.FC = () => {
   const rx78Edition = useKeyboardStore((s) => s.rx78Edition);
   const setRx78Edition = useKeyboardStore((s) => s.setRx78Edition);
   const applyRx78GundamTheme = useKeyboardStore((s) => s.applyRx78GundamTheme);
+  const polarisEdition = useKeyboardStore((s) => s.polarisEdition);
+  const setPolarisEdition = useKeyboardStore((s) => s.setPolarisEdition);
+  const applyPolarisTheme = useKeyboardStore((s) => s.applyPolarisTheme);
   const cableVisible = useKeyboardStore((s) => s.cableVisible);
   const setCableVisible = useKeyboardStore((s) => s.setCableVisible);
   const cableStyle = useKeyboardStore((s) => s.cableStyle);
@@ -229,6 +234,47 @@ export const RightCustomizerDrawer: React.FC = () => {
                     <span className="text-[10px] text-sky-400 font-mono">一键换装</span>
                   </div>
                   <div className="flex flex-col gap-2">
+                    {/* Polaris Candy Special Edition Theme Card */}
+                    <button
+                      key={POLARIS_CANDY_PRESET.id}
+                      onClick={() => applyPresetTheme('polaris_candy')}
+                      className={`p-2.5 rounded-2xl border text-left flex flex-col gap-1.5 transition-all ${
+                        activePresetTheme === 'polaris_candy'
+                          ? 'bg-pink-500/20 border-pink-400 shadow-md shadow-pink-500/20'
+                          : 'bg-slate-800/50 border-white/5 hover:bg-slate-800/80 hover:border-white/15'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-pink-200">{POLARIS_CANDY_PRESET.name}</span>
+                          <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30">
+                            实拍限定
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-sm"
+                            style={{ backgroundColor: POLARIS_CANDY_PRESET.palette.alphas.top }}
+                            title="香草奶白字母区"
+                          />
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-sm"
+                            style={{ backgroundColor: POLARIS_CANDY_PRESET.palette.modifiers.top }}
+                            title="丁香紫修饰键"
+                          />
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-sm"
+                            style={{ backgroundColor: POLARIS_CANDY_PRESET.palette.accents.top }}
+                            title="薄荷绿/蜜桃粉个性"
+                          />
+                          {activePresetTheme === 'polaris_candy' && <Check className="w-3.5 h-3.5 text-pink-400 ml-1" />}
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-slate-400 line-clamp-1 leading-snug">
+                        {POLARIS_CANDY_PRESET.description}
+                      </p>
+                    </button>
+
                     {Object.values(THEME_PRESETS).map((t) => {
                       const isActive = activePresetTheme === t.id;
                       return (
@@ -397,7 +443,47 @@ export const RightCustomizerDrawer: React.FC = () => {
             {/* TAB 2: CASE & FINISHES */}
             {activeTab === 'case' && (
               <div className="flex flex-col gap-4">
-                {/* 0. Gundam RX-78 Limited Mecha Edition Hero Card */}
+                {/* 0. Polaris 80 Limited Handheld & Hexagram Star Hero Card */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-pink-950/80 via-slate-900 to-purple-950/90 border border-pink-500/30 shadow-lg shadow-pink-500/10 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-pink-400 animate-pulse shadow-[0_0_8px_#f472b6]" />
+                      <span className="text-xs font-bold text-pink-200">
+                        北极星 80 樱花粉复古掌机·六芒星限定版
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30">
+                      六芒星限定
+                    </span>
+                  </div>
+
+                  <p className="text-[10px] text-slate-300 leading-relaxed">
+                    樱花粉阳极外壳 • 高光钻石倒角镜面银框 • PlayStation 符号金框 • 3D 金属六芒星立体勋章 • 后侧掌机双十字键 • 双侧跑道流光灯条。
+                  </p>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => applyPolarisTheme()}
+                      className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-teal-400 hover:from-pink-400 hover:to-teal-300 text-white text-[11px] font-bold shadow-md shadow-pink-500/30 flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                      <span>一键换装北极星 80 魔法糖果限定版</span>
+                    </button>
+                    <button
+                      onClick={() => setPolarisEdition(!polarisEdition)}
+                      className={`px-3 py-2 rounded-xl text-[11px] font-semibold border transition-all ${
+                        polarisEdition
+                          ? 'bg-pink-500/20 text-pink-300 border-pink-400'
+                          : 'bg-slate-800/80 text-slate-400 border-white/10 hover:text-white'
+                      }`}
+                      title="单独开启/关闭北极星 80 专属外观特征"
+                    >
+                      {polarisEdition ? '已开启' : '单独启用'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 0.1 Gundam RX-78 Limited Mecha Edition Hero Card */}
                 <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-950/80 via-slate-900 to-indigo-950/90 border border-blue-500/30 shadow-lg shadow-blue-500/10 flex flex-col gap-2.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">

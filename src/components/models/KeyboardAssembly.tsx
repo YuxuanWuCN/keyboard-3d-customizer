@@ -4,6 +4,7 @@ import { KEYBOARD_LAYOUTS } from '../../constants/keyboardLayouts';
 import { ProceduralCase } from './ProceduralCase';
 import { GasketStack } from './GasketStack';
 import { AviatorCable } from './AviatorCable';
+import { CompanionNumpad } from './CompanionNumpad';
 
 export const KeyboardAssembly: React.FC = () => {
   const model = useKeyboardStore((s) => s.model);
@@ -11,6 +12,8 @@ export const KeyboardAssembly: React.FC = () => {
   const caseFinish = useKeyboardStore((s) => s.caseFinish);
   const weightMaterial = useKeyboardStore((s) => s.weightMaterial);
   const rx78Edition = useKeyboardStore((s) => s.rx78Edition);
+  const polarisEdition = useKeyboardStore((s) => s.polarisEdition);
+  const polarisNumpad = useKeyboardStore((s) => s.polarisNumpad);
   const cableVisible = useKeyboardStore((s) => s.cableVisible);
   const cableStyle = useKeyboardStore((s) => s.cableStyle);
   const cableColor = useKeyboardStore((s) => s.cableColor);
@@ -60,6 +63,7 @@ export const KeyboardAssembly: React.FC = () => {
         layerVisibility={layerVisibility}
         isolatedLayer={isolatedLayer}
         rx78Edition={rx78Edition}
+        polarisEdition={polarisEdition}
       />
 
       {/* High-End Luminous Metal Aviator Coiled Cable */}
@@ -87,6 +91,12 @@ export const KeyboardAssembly: React.FC = () => {
         switchType={switchType}
         switchModel={switchModel}
         onKeyClick={handleKeyClick}
+      />
+
+      {/* 17-Key Retro Gamepad Companion Numpad */}
+      <CompanionNumpad
+        visible={polarisNumpad}
+        position={[layout.dimensions.width / 2 + 56.0, 0, 0]}
       />
     </group>
   );
