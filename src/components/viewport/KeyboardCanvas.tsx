@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { SceneLighting } from './SceneLighting';
@@ -7,16 +7,39 @@ import { CameraController } from './CameraController';
 import { KeyboardAssembly } from '../models/KeyboardAssembly';
 import { useKeyboardStore } from '../../store/useKeyboardStore';
 
-export const KeyboardCanvas: React.FC = () => {
+const DynamicContactShadows: React.FC = () => {
   const cameraPreset = useKeyboardStore((s) => s.cameraPreset);
   const explodedProgress = useKeyboardStore((s) => s.explodedProgress);
+  const [isUnderneath, setIsUnderneath] = React.useState(false);
 
-  // Smoothly dissolve contact shadow when inspecting back weight or when fully exploded
-  const shadowOpacity =
-    cameraPreset === 'back'
-      ? 0.0
-      : Math.max(0.05, 0.45 * (1 - explodedProgress * 0.75));
+  useFrame(({ camera }) => {
+    const under = camera.position.y < -15;
+    if (under !== isUnderneath) {
+      setIsUnderneath(under);
+    }
+  });
 
+  if (cameraPreset === 'back' || isUnderneath) {
+    return null;
+  }
+
+  const shadowOpacity = Math.max(0.05, 0.45 * (1 - explodedProgress * 0.75));
+  if (shadowOpacity <= 0.01) return null;
+
+  return (
+    <ContactShadows
+      position={[0, -25.2, 0]}
+      opacity={shadowOpacity}
+      scale={480}
+      blur={2.4}
+      far={45}
+      resolution={1024}
+      color="#0f172a"
+    />
+  );
+};
+
+export const KeyboardCanvas: React.FC = () => {
   return (
     <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
       <Canvas
@@ -41,17 +64,7 @@ export const KeyboardCanvas: React.FC = () => {
           <KeyboardAssembly />
 
           {/* Studio-Grade Blurred Contact Shadow (Grounded at keyboard feet, dissolves on back inspect) */}
-          {shadowOpacity > 0.01 && (
-            <ContactShadows
-              position={[0, -25.2, 0]}
-              opacity={shadowOpacity}
-              scale={480}
-              blur={2.4}
-              far={45}
-              resolution={1024}
-              color="#0f172a"
-            />
-          )}
+          <DynamicContactShadows />
         </Suspense>
       </Canvas>
     </div>

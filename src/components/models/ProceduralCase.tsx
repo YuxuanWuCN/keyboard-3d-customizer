@@ -168,7 +168,7 @@ function createPolarisGoldBorderTexture(): THREE.CanvasTexture {
   ctx.fillRect(0, 0, 2048, 512);
 
   // Micro brushed metal texture lines
-  ctx.strokeStyle = 'rgba(254, 240, 138, 0.12)';
+  ctx.strokeStyle = 'rgba(254, 240, 138, 0.15)';
   ctx.lineWidth = 1;
   for (let y = 0; y < 512; y += 4) {
     ctx.beginPath();
@@ -177,7 +177,7 @@ function createPolarisGoldBorderTexture(): THREE.CanvasTexture {
     ctx.stroke();
   }
 
-  // Polished gold border highlights
+  // Polished gold outer border highlights
   ctx.strokeStyle = '#fef08a';
   ctx.lineWidth = 6;
   ctx.strokeRect(10, 10, 2028, 492);
@@ -185,44 +185,66 @@ function createPolarisGoldBorderTexture(): THREE.CanvasTexture {
   ctx.lineWidth = 3;
   ctx.strokeRect(18, 18, 2012, 476);
 
-  // Inner cutout border
-  ctx.strokeStyle = '#fde047';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(100, 70, 1848, 372);
+  // Clear inner window cutout so mirror PVD plate & 3D hexagram shine through completely
+  ctx.clearRect(108, 80, 1832, 352);
 
-  // 2. PlayStation Button Symbols: ▲ ■ ● ✖ in corners
+  // Inner cutout beveled border
+  ctx.strokeStyle = '#fef08a';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(108, 80, 1832, 352);
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(104, 76, 1840, 360);
+
+  // 2. PlayStation Button Symbols: ▲ ■ ● ✖ in 4 corners
   const drawSymbols = (x: number, y: number) => {
     ctx.save();
-    ctx.font = '900 38px "Segoe UI", Arial, sans-serif';
-    ctx.fillStyle = '#78350f';
-    ctx.fillText('▲    ■    ●    ✖', x + 2, y + 2);
-    ctx.fillStyle = '#fef9c3';
-    ctx.fillText('▲    ■    ●    ✖', x, y);
+    ctx.font = '900 40px "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    // Deep laser engraved shadow
+    ctx.fillStyle = '#451a03';
+    ctx.fillText('▲   ■   ●   ✖', x + 2, y + 2);
+    // Brilliant metallic gold face
+    ctx.fillStyle = '#fef08a';
+    ctx.fillText('▲   ■   ●   ✖', x, y);
     ctx.restore();
   };
 
-  // Top-Left corner & Bottom-Left corner
-  drawSymbols(120, 52);
-  drawSymbols(120, 486);
-  // Top-Right corner & Bottom-Right corner
-  drawSymbols(1560, 52);
-  drawSymbols(1560, 486);
+  // Top-Left and Bottom-Left corners
+  drawSymbols(140, 46);
+  drawSymbols(140, 474);
+  // Top-Right and Bottom-Right corners
+  drawSymbols(1520, 46);
+  drawSymbols(1520, 474);
 
   // 3. Directional Arrows: ◀ on left margin, ▶ on right margin
-  ctx.font = '900 48px "Segoe UI", Arial, sans-serif';
-  ctx.fillStyle = '#78350f';
-  ctx.fillText('◀', 46, 272);
-  ctx.fillText('▶', 1968, 272);
+  ctx.save();
+  ctx.font = '900 52px "Segoe UI", Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Shadow
+  ctx.fillStyle = '#451a03';
+  ctx.fillText('◀', 56, 258);
+  ctx.fillText('▶', 1992, 258);
+  // Brilliant face
   ctx.fillStyle = '#fef08a';
-  ctx.fillText('◀', 44, 270);
-  ctx.fillText('▶', 1966, 270);
+  ctx.fillText('◀', 54, 256);
+  ctx.fillText('▶', 1990, 256);
+  ctx.restore();
 
   // 4. Centered Edition Engravings
-  ctx.font = '700 24px "Segoe UI", sans-serif';
+  ctx.save();
+  ctx.font = 'bold 26px "Segoe UI", Arial, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#fef9c3';
-  ctx.fillText('★  POLARIS 80  •  RETRO HANDHELD SPECIAL EDITION  ★', 1024, 48);
-  ctx.fillText('DUAL-LAYER CNC PVD WEIGHT  •  HEXAGRAM MEDALLION  •  001/080', 1024, 490);
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#451a03';
+  ctx.fillText('★  POLARIS 80  •  RETRO HANDHELD SPECIAL EDITION  ★', 1024, 46);
+  ctx.fillText('DUAL-LAYER CNC PVD WEIGHT  •  HEXAGRAM MEDALLION  •  001/080', 1024, 474);
+  ctx.fillStyle = '#fef08a';
+  ctx.fillText('★  POLARIS 80  •  RETRO HANDHELD SPECIAL EDITION  ★', 1024, 44);
+  ctx.fillText('DUAL-LAYER CNC PVD WEIGHT  •  HEXAGRAM MEDALLION  •  001/080', 1024, 472);
+  ctx.restore();
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 16;
@@ -447,8 +469,8 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     () =>
       new THREE.MeshPhysicalMaterial({
         color: '#f59e0b',
-        metalness: 0.95,
-        roughness: 0.15,
+        metalness: 0.86,
+        roughness: 0.18,
         clearcoat: 0.8,
         clearcoatRoughness: 0.05,
         reflectivity: 0.95,
@@ -461,12 +483,12 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     () =>
       new THREE.MeshPhysicalMaterial({
         color: '#f8fafc',
-        metalness: 0.99,
-        roughness: 0.02,
+        metalness: 0.88,
+        roughness: 0.08,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.01,
+        clearcoatRoughness: 0.02,
         reflectivity: 1.0,
-        envMapIntensity: 3.5,
+        envMapIntensity: 3.2,
       }),
     []
   );
@@ -475,12 +497,12 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     () =>
       new THREE.MeshPhysicalMaterial({
         color: '#ffffff',
-        metalness: 0.99,
-        roughness: 0.03,
+        metalness: 0.90,
+        roughness: 0.05,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.01,
+        clearcoatRoughness: 0.02,
         reflectivity: 1.0,
-        envMapIntensity: 3.6,
+        envMapIntensity: 3.5,
       }),
     []
   );
@@ -1360,120 +1382,154 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
             /* Polaris 80: R1 Underside Dual-Layer CNC Weight & 3D Hexagram   */
             /* ============================================================== */
             <group>
-              {/* Outer PVD Gold Border (metalness 0.95, roughness 0.15, clearcoat 0.8) */}
+              {/* Outer PVD Gold Border */}
               <mesh geometry={polarisGoldBorderGeom} material={polarisGoldBorderMat} castShadow receiveShadow />
 
               {/* Gold Border High-DPI Procedural Decal with PlayStation Symbols & Markings */}
-              <mesh position={[0, -1.86, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[294.0, 72.0]} />
+              <mesh position={[0, -2.42, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[296.0, 74.0]} />
                 <meshStandardMaterial
                   map={polarisGoldTexture}
-                  roughness={0.15}
-                  metalness={0.95}
+                  roughness={0.18}
+                  metalness={0.86}
                   transparent
-                  opacity={0.98}
+                  opacity={0.99}
+                  depthWrite={false}
+                  side={THREE.DoubleSide}
                 />
               </mesh>
 
               {/* 3D Embossed PlayStation Symbols & Directional Arrows on Outer Gold Border */}
-              <group position={[0, -1.95, 0]}>
+              <group position={[0, -2.44, 0]}>
                 {/* 3D Directional Arrows: Left ◀ and Right ▶ */}
-                <mesh position={[-139.0, 0, 0]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-                  <cylinderGeometry args={[2.5, 2.5, 0.5, 3]} />
+                <mesh position={[-140.0, 0, 0]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
+                  <cylinderGeometry args={[2.5, 2.5, 0.6, 3]} />
                   <primitive object={polarisGoldBorderMat} attach="material" />
                 </mesh>
-                <mesh position={[139.0, 0, 0]} rotation={[Math.PI / 2, 0, -Math.PI / 2]}>
-                  <cylinderGeometry args={[2.5, 2.5, 0.5, 3]} />
+                <mesh position={[140.0, 0, 0]} rotation={[Math.PI / 2, 0, -Math.PI / 2]}>
+                  <cylinderGeometry args={[2.5, 2.5, 0.6, 3]} />
                   <primitive object={polarisGoldBorderMat} attach="material" />
                 </mesh>
 
                 {/* 3D PlayStation Symbols in 4 Corners: ▲ ■ ● ✖ */}
                 {/* Top-Left Corner */}
                 <group position={[-125.0, 0, -28.5]}>
-                  {/* ▲ Triangle */}
                   <mesh position={[-10.0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                    <cylinderGeometry args={[2.0, 2.0, 0.5, 3]} />
+                    <cylinderGeometry args={[2.0, 2.0, 0.6, 3]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ■ Square */}
                   <mesh position={[-3.5, 0, 0]}>
-                    <boxGeometry args={[3.2, 0.5, 3.2]} />
+                    <boxGeometry args={[3.2, 0.6, 3.2]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ● Circle */}
                   <mesh position={[3.5, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                    <cylinderGeometry args={[1.8, 1.8, 0.5, 20]} />
+                    <cylinderGeometry args={[1.8, 1.8, 0.6, 20]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ✖ Cross */}
                   <group position={[10.0, 0, 0]} rotation={[0, Math.PI / 4, 0]}>
-                    <mesh><boxGeometry args={[3.6, 0.5, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
-                    <mesh><boxGeometry args={[1.0, 0.5, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[3.6, 0.6, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[1.0, 0.6, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                  </group>
+                </group>
+
+                {/* Bottom-Left Corner */}
+                <group position={[-125.0, 0, 28.5]}>
+                  <mesh position={[-10.0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                    <cylinderGeometry args={[2.0, 2.0, 0.6, 3]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <mesh position={[-3.5, 0, 0]}>
+                    <boxGeometry args={[3.2, 0.6, 3.2]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <mesh position={[3.5, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                    <cylinderGeometry args={[1.8, 1.8, 0.6, 20]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <group position={[10.0, 0, 0]} rotation={[0, Math.PI / 4, 0]}>
+                    <mesh><boxGeometry args={[3.6, 0.6, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[1.0, 0.6, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                  </group>
+                </group>
+
+                {/* Top-Right Corner */}
+                <group position={[125.0, 0, -28.5]}>
+                  <mesh position={[-10.0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                    <cylinderGeometry args={[2.0, 2.0, 0.6, 3]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <mesh position={[-3.5, 0, 0]}>
+                    <boxGeometry args={[3.2, 0.6, 3.2]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <mesh position={[3.5, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                    <cylinderGeometry args={[1.8, 1.8, 0.6, 20]} />
+                    <primitive object={polarisGoldBorderMat} attach="material" />
+                  </mesh>
+                  <group position={[10.0, 0, 0]} rotation={[0, Math.PI / 4, 0]}>
+                    <mesh><boxGeometry args={[3.6, 0.6, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[1.0, 0.6, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
                   </group>
                 </group>
 
                 {/* Bottom-Right Corner */}
                 <group position={[125.0, 0, 28.5]}>
-                  {/* ▲ Triangle */}
                   <mesh position={[-10.0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                    <cylinderGeometry args={[2.0, 2.0, 0.5, 3]} />
+                    <cylinderGeometry args={[2.0, 2.0, 0.6, 3]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ■ Square */}
                   <mesh position={[-3.5, 0, 0]}>
-                    <boxGeometry args={[3.2, 0.5, 3.2]} />
+                    <boxGeometry args={[3.2, 0.6, 3.2]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ● Circle */}
                   <mesh position={[3.5, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                    <cylinderGeometry args={[1.8, 1.8, 0.5, 20]} />
+                    <cylinderGeometry args={[1.8, 1.8, 0.6, 20]} />
                     <primitive object={polarisGoldBorderMat} attach="material" />
                   </mesh>
-                  {/* ✖ Cross */}
                   <group position={[10.0, 0, 0]} rotation={[0, Math.PI / 4, 0]}>
-                    <mesh><boxGeometry args={[3.6, 0.5, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
-                    <mesh><boxGeometry args={[1.0, 0.5, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[3.6, 0.6, 1.0]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
+                    <mesh><boxGeometry args={[1.0, 0.6, 3.6]} /><primitive object={polarisGoldBorderMat} attach="material" /></mesh>
                   </group>
                 </group>
               </group>
 
-              {/* Inner Mirror PVD Silver Plate (metalness 0.99, roughness 0.02, clearcoat 1.0) */}
+              {/* Inner Mirror PVD Silver Plate */}
               <mesh
                 geometry={polarisMirrorPlateGeom}
                 material={polarisMirrorPlateMat}
-                position={[0, -0.4, 0]}
+                position={[0, -0.3, 0]}
                 receiveShadow
               />
 
               {/* Twin Engraved Horizontal Groove Lines traversing the Mirror Plate */}
               {/* Upper Groove (Z = -13.0) */}
-              <mesh position={[-76.0, -1.75, -13.0]}>
-                <boxGeometry args={[100.0, 0.45, 1.2]} />
-                <meshStandardMaterial color="#475569" metalness={0.85} roughness={0.3} />
+              <mesh position={[-76.0, -2.02, -13.0]}>
+                <boxGeometry args={[100.0, 0.35, 1.2]} />
+                <meshStandardMaterial color="#334155" metalness={0.85} roughness={0.25} />
               </mesh>
-              <mesh position={[76.0, -1.75, -13.0]}>
-                <boxGeometry args={[100.0, 0.45, 1.2]} />
-                <meshStandardMaterial color="#475569" metalness={0.85} roughness={0.3} />
+              <mesh position={[76.0, -2.02, -13.0]}>
+                <boxGeometry args={[100.0, 0.35, 1.2]} />
+                <meshStandardMaterial color="#334155" metalness={0.85} roughness={0.25} />
               </mesh>
 
               {/* Lower Groove (Z = +13.0) */}
-              <mesh position={[-76.0, -1.75, 13.0]}>
-                <boxGeometry args={[100.0, 0.45, 1.2]} />
-                <meshStandardMaterial color="#475569" metalness={0.85} roughness={0.3} />
+              <mesh position={[-76.0, -2.02, 13.0]}>
+                <boxGeometry args={[100.0, 0.35, 1.2]} />
+                <meshStandardMaterial color="#334155" metalness={0.85} roughness={0.25} />
               </mesh>
-              <mesh position={[76.0, -1.75, 13.0]}>
-                <boxGeometry args={[100.0, 0.45, 1.2]} />
-                <meshStandardMaterial color="#475569" metalness={0.85} roughness={0.3} />
+              <mesh position={[76.0, -2.02, 13.0]}>
+                <boxGeometry args={[100.0, 0.35, 1.2]} />
+                <meshStandardMaterial color="#334155" metalness={0.85} roughness={0.25} />
               </mesh>
 
               {/* Central 3D Pure Metal Polyhedral Hexagram Medallion */}
               {/* Top & bottom points (Z = ±25.5) bite into the outer gold border frame */}
-              <group position={[0, -1.2, 0]}>
+              <group position={[0, -1.8, 0]}>
                 {/* Interlaced Equilateral Triangle 1 (Pointing UP) */}
                 <mesh
                   geometry={polarisHexTriangleUpGeom}
                   material={polarisHexagramMat}
-                  position={[0, -0.4, 0]}
+                  position={[0, -0.2, 0]}
                   castShadow
                   receiveShadow
                 />
@@ -1482,23 +1538,23 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
                 <mesh
                   geometry={polarisHexTriangleDownGeom}
                   material={polarisHexagramMat}
-                  position={[0, -0.4, 0]}
+                  position={[0, -0.2, 0]}
                   castShadow
                   receiveShadow
                 />
 
-                {/* Central Hexagonal Hub with Recess Cavity */}
-                <mesh position={[0, -0.4, 0]} rotation={[0, 0, 0]}>
-                  <cylinderGeometry args={[12.5, 12.5, 2.4, 6]} />
+                {/* Central Hexagonal Hub */}
+                <mesh position={[0, -0.3, 0]}>
+                  <cylinderGeometry args={[12.5, 12.5, 2.6, 6]} />
                   <primitive object={polarisHexagramMat} attach="material" />
                 </mesh>
                 {/* Central Hexagonal Cavity / Recess */}
-                <mesh position={[0, -1.65, 0]}>
-                  <cylinderGeometry args={[8.5, 8.5, 1.2, 6]} />
-                  <meshStandardMaterial color="#0f172a" roughness={0.6} metalness={0.8} />
+                <mesh position={[0, -1.4, 0]}>
+                  <cylinderGeometry args={[8.5, 8.5, 1.0, 6]} />
+                  <meshStandardMaterial color="#090d16" roughness={0.5} metalness={0.9} />
                 </mesh>
                 {/* Center Faceted Gold Star Emblem Core */}
-                <mesh position={[0, -1.8, 0]}>
+                <mesh position={[0, -1.6, 0]}>
                   <cylinderGeometry args={[5.2, 5.2, 0.8, 6]} />
                   <primitive object={polarisGoldBorderMat} attach="material" />
                 </mesh>
@@ -1525,7 +1581,7 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
               {/* 4 Corner Gold Retention Screws */}
               {[-140.0, 140.0].map((sx, i) =>
                 [-30.0, 30.0].map((sz, j) => (
-                  <group key={`polaris-screw-${i}-${j}`} position={[sx, -1.9, sz]}>
+                  <group key={`polaris-screw-${i}-${j}`} position={[sx, -2.42, sz]}>
                     <mesh>
                       <cylinderGeometry args={[1.8, 1.8, 0.8, 16]} />
                       <primitive object={polarisGoldBorderMat} attach="material" />
