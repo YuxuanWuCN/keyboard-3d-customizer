@@ -530,6 +530,69 @@ function buildBakeneko65Keys(): KeyDefinition[] {
 }
 
 // ==========================================
+// 5. Polaris Pad 17 (17 Keys Numeric Keypad)
+// ==========================================
+function buildPolarisPad17Keys(): KeyDefinition[] {
+  const keys: KeyDefinition[] = [];
+
+  // Row 0 (Top Function/Calculator Row) - 4U
+  const r0 = [
+    { code: 'NumLock', label: 'NUM', subLabel: 'PAD', w: 1.0, reg: 'accent', x: 0.0 },
+    { code: 'NumpadDivide', label: '÷', subLabel: '/', w: 1.0, reg: 'modifiers', x: 1.0 },
+    { code: 'NumpadMultiply', label: '×', subLabel: '*', w: 1.0, reg: 'modifiers', x: 2.0 },
+    { code: 'NumpadSubtract', label: '−', subLabel: '-', w: 1.0, reg: 'modifiers', x: 3.0 },
+  ];
+  r0.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 0, k.x, 0.0, k.reg as any, 'R1'));
+  });
+
+  // Row 1 (7, 8, 9, +)
+  // Note: NumpadAdd is 1U wide, 2U tall spanning Row 1 & 2
+  const r1 = [
+    { code: 'Numpad7', label: '7', subLabel: 'HOME', w: 1.0, h: 1.0, reg: 'alphas', x: 0.0, y: 1.0 },
+    { code: 'Numpad8', label: '8', subLabel: '▲', w: 1.0, h: 1.0, reg: 'alphas', x: 1.0, y: 1.0 },
+    { code: 'Numpad9', label: '9', subLabel: 'PGUP', w: 1.0, h: 1.0, reg: 'alphas', x: 2.0, y: 1.0 },
+    { code: 'NumpadAdd', label: '+', subLabel: '', w: 1.0, h: 2.0, reg: 'modifiers', x: 3.0, y: 1.0 },
+  ];
+  r1.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 1, k.x, k.y, k.reg as any, 'R2', k.h));
+  });
+
+  // Row 2 (4, 5, 6)
+  const r2 = [
+    { code: 'Numpad4', label: '4', subLabel: '◄', w: 1.0, reg: 'alphas', x: 0.0 },
+    { code: 'Numpad5', label: '5', subLabel: '', w: 1.0, reg: 'alphas', x: 1.0 },
+    { code: 'Numpad6', label: '6', subLabel: '►', w: 1.0, reg: 'alphas', x: 2.0 },
+  ];
+  r2.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 2, k.x, 2.0, k.reg as any, 'R3'));
+  });
+
+  // Row 3 (1, 2, 3, Enter)
+  // Note: NumpadEnter is 1U wide, 2U tall spanning Row 3 & 4
+  const r3 = [
+    { code: 'Numpad1', label: '1', subLabel: 'END', w: 1.0, h: 1.0, reg: 'alphas', x: 0.0, y: 3.0 },
+    { code: 'Numpad2', label: '2', subLabel: '▼', w: 1.0, h: 1.0, reg: 'alphas', x: 1.0, y: 3.0 },
+    { code: 'Numpad3', label: '3', subLabel: 'PGDN', w: 1.0, h: 1.0, reg: 'alphas', x: 2.0, y: 3.0 },
+    { code: 'NumpadEnter', label: 'ENTER', subLabel: '↵', w: 1.0, h: 2.0, reg: 'accent', x: 3.0, y: 3.0 },
+  ];
+  r3.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 3, k.x, k.y, k.reg as any, 'R4', k.h));
+  });
+
+  // Row 4 (0 [2U wide], . [1U wide])
+  const r4 = [
+    { code: 'Numpad0', label: '0', subLabel: 'INS', w: 2.0, h: 1.0, reg: 'alphas', x: 0.0 },
+    { code: 'NumpadDecimal', label: '.', subLabel: 'DEL', w: 1.0, h: 1.0, reg: 'alphas', x: 2.0 },
+  ];
+  r4.forEach((k) => {
+    keys.push(createKey(k.code, k.code, k.label, k.subLabel, k.w, 4, k.x, 4.0, k.reg as any, 'R4', k.h));
+  });
+
+  return keys;
+}
+
+// ==========================================
 // Layout Definitions Registry
 // ==========================================
 export const KEYBOARD_LAYOUTS: Record<KeyboardModelId, KeyboardLayoutDefinition> = {
@@ -588,5 +651,19 @@ export const KEYBOARD_LAYOUTS: Record<KeyboardModelId, KeyboardLayoutDefinition>
       bezelWidth: 4.8,
     },
     keys: buildBakeneko65Keys(),
+  },
+  polaris_pad17: {
+    model: 'polaris_pad17',
+    name: 'Polaris Pad 17 (北极星 17键 PAD)',
+    keyCount: 17,
+    dimensions: {
+      width: 96.0,
+      depth: 128.0,
+      frontHeight: 18.0,
+      rearHeight: 28.0,
+      typingAngleDeg: 6.0,
+      bezelWidth: 6.5,
+    },
+    keys: buildPolarisPad17Keys(),
   },
 };

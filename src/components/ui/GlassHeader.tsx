@@ -71,11 +71,15 @@ export const GlassHeader: React.FC = () => {
     e.target.value = '';
   };
 
-  const models: { id: KeyboardModelId; name: string; tag: string }[] = [
+  const mainModels: { id: KeyboardModelId; name: string; tag: string }[] = [
     { id: 'eveningstar75', name: '晚星 75', tag: '75% • 82 键' },
     { id: 'mrsuit80', name: '北极星 80', tag: '80% • 六芒星限定' },
-    { id: 'bakeneko65', name: '化猫 65', tag: '65% • O-Ring开山之作' },
+    { id: 'bakeneko65', name: '化猫 65', tag: '65% • O-Ring' },
     { id: 'tofu60', name: '豆腐 60', tag: '60% • 61 键' },
+  ];
+
+  const padModels: { id: KeyboardModelId; name: string; tag: string }[] = [
+    { id: 'polaris_pad17', name: '北极星 Pad 17', tag: '17 键 • 独立数字PAD' },
   ];
 
   const cameraPresets: { id: CameraPreset; label: string }[] = [
@@ -107,27 +111,61 @@ export const GlassHeader: React.FC = () => {
         </div>
       </div>
 
-      {/* Model Switcher Tabs (EveningStar 75, Mr. Suit 80, Tofu 60) */}
+      {/* Categorized Model Switcher Tabs (Main Keyboards vs Standalone PAD) */}
       <div className="pointer-events-auto flex items-center p-1 rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-        {models.map((m) => {
-          const active = model === m.id;
-          return (
-            <button
-              key={m.id}
-              onClick={() => setModel(m.id)}
-              className={`flex flex-col items-center px-4 py-1.5 rounded-xl transition-all duration-200 ${
-                active
-                  ? 'bg-sky-500 text-white font-medium shadow-md shadow-sky-500/30 scale-[1.02]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <span className="text-xs font-semibold">{m.name}</span>
-              <span className={`text-[10px] ${active ? 'text-sky-100' : 'text-slate-500'}`}>
-                {m.tag}
-              </span>
-            </button>
-          );
-        })}
+        {/* Category 1: 主力键盘 */}
+        <div className="flex items-center gap-1 pr-2 border-r border-white/10">
+          <div className="hidden sm:flex flex-col items-center px-2 py-0.5 text-slate-400 select-none">
+            <span className="text-xs">⌨️</span>
+            <span className="text-[9px] font-bold tracking-tight">主力键盘</span>
+          </div>
+          {mainModels.map((m) => {
+            const active = model === m.id;
+            return (
+              <button
+                key={m.id}
+                onClick={() => setModel(m.id)}
+                className={`flex flex-col items-center px-3.5 py-1.5 rounded-xl transition-all duration-200 ${
+                  active
+                    ? 'bg-sky-500 text-white font-medium shadow-md shadow-sky-500/30 scale-[1.02]'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                }`}
+              >
+                <span className="text-xs font-semibold">{m.name}</span>
+                <span className={`text-[10px] ${active ? 'text-sky-100' : 'text-slate-500'}`}>
+                  {m.tag}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Category 2: 独立小键盘 / PAD */}
+        <div className="flex items-center gap-1 pl-2">
+          <div className="hidden sm:flex flex-col items-center px-2 py-0.5 text-pink-400 select-none">
+            <span className="text-xs">🔢</span>
+            <span className="text-[9px] font-bold tracking-tight">独立PAD</span>
+          </div>
+          {padModels.map((m) => {
+            const active = model === m.id;
+            return (
+              <button
+                key={m.id}
+                onClick={() => setModel(m.id)}
+                className={`flex flex-col items-center px-3.5 py-1.5 rounded-xl transition-all duration-200 ${
+                  active
+                    ? 'bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white font-medium shadow-md shadow-pink-500/30 scale-[1.02]'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                }`}
+              >
+                <span className="text-xs font-semibold">{m.name}</span>
+                <span className={`text-[10px] ${active ? 'text-pink-100' : 'text-slate-500'}`}>
+                  {m.tag}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Quick Action Toolbar */}
@@ -168,18 +206,28 @@ export const GlassHeader: React.FC = () => {
         </button>
 
         {/* Companion Numpad Quick Toggle Button */}
-        <button
-          onClick={() => setPolarisNumpad(!polarisNumpad)}
-          className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
-            polarisNumpad
-              ? 'bg-pink-500/20 text-pink-300 border border-pink-400/30 shadow-sm shadow-pink-500/10'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
-          }`}
-          title={polarisNumpad ? '隐藏 17-Key 伴侣小键盘' : '显示配套 17-Key 伴侣小键盘'}
-        >
-          <span className="text-[11px]">🎮</span>
-          <span className="font-semibold">{polarisNumpad ? '伴侣小键盘: 开' : '小键盘: 关'}</span>
-        </button>
+        {model !== 'polaris_pad17' ? (
+          <button
+            onClick={() => setPolarisNumpad(!polarisNumpad)}
+            className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+              polarisNumpad
+                ? 'bg-pink-500/20 text-pink-300 border border-pink-400/30 shadow-sm shadow-pink-500/10'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+            title={polarisNumpad ? '隐藏 17-Key 伴侣小键盘' : '在桌面右侧展示 17-Key 伴侣小键盘'}
+          >
+            <span className="text-[11px]">🎮</span>
+            <span className="font-semibold">{polarisNumpad ? '桌面对照PAD: 开' : '桌面对照PAD: 关'}</span>
+          </button>
+        ) : (
+          <div
+            className="px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 bg-pink-500/15 text-pink-300 border border-pink-500/30 cursor-default"
+            title="当前处于独立数字 PAD 主定制模式"
+          >
+            <span className="text-[11px]">🔢</span>
+            <span className="font-semibold">独立 PAD 模式</span>
+          </div>
+        )}
 
         {/* Audio Acoustics Control Popover */}
         <div className="relative">

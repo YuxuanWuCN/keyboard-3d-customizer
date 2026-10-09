@@ -95,7 +95,7 @@ export const KeyboardAssembly: React.FC = () => {
 
       {/* 17-Key Retro Gamepad Companion Numpad */}
       <CompanionNumpad
-        visible={polarisNumpad}
+        visible={polarisNumpad && model !== 'polaris_pad17'}
         position={[layout.dimensions.width / 2 + 56.0, 0, 0]}
       />
     </group>

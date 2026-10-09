@@ -21,8 +21,8 @@ export const CameraController: React.FC = () => {
   // Compute camera position based on preset and model layout size
   useEffect(() => {
     const layout = KEYBOARD_LAYOUTS[model];
-    const { width: W } = layout.dimensions;
-    const baseDist = (W / 2) / Math.tan((42 * Math.PI) / 360) * 0.95;
+    const maxDim = Math.max(layout.dimensions.width, layout.dimensions.depth);
+    const baseDist = (maxDim / 2) / Math.tan((42 * Math.PI) / 360) * 0.95;
 
     let pos = new THREE.Vector3(baseDist * 0.48, baseDist * 0.72, baseDist * 0.85);
     let lookAt = new THREE.Vector3(0, 0, 0);

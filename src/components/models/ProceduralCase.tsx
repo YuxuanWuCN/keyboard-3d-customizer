@@ -456,9 +456,10 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     caseColor.toLowerCase() === '#2563eb';
 
   const isPolaris =
-    Boolean(polarisEdition) ||
-    weightMaterial === 'polaris_hexagram' ||
-    (model === 'mrsuit80' && !isRx78);
+    model !== 'polaris_pad17' &&
+    (Boolean(polarisEdition) ||
+      weightMaterial === 'polaris_hexagram' ||
+      (model === 'mrsuit80' && !isRx78));
 
   const isBakeneko = model === 'bakeneko65';
 
@@ -719,9 +720,21 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     } else if (model === 'mrsuit80') {
       innerW = 356.5;
       innerD = 124.0;
+    } else if (model === 'polaris_pad17') {
+      innerW = 80.5;
+      innerD = 99.5;
     }
 
-    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'bakeneko65' ? 3.2 : model === 'eveningstar75' ? 1.5 : 0.4;
+    const cornerR =
+      model === 'mrsuit80'
+        ? 4.5
+        : model === 'bakeneko65'
+        ? 3.2
+        : model === 'polaris_pad17'
+        ? 3.5
+        : model === 'eveningstar75'
+        ? 1.5
+        : 0.4;
     const outerShape = createRoundedRectShape(W, D, cornerR);
 
     // Inner cavity cutout for plate and key switches
@@ -739,9 +752,9 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
       depth: 16.0,
       bevelEnabled: true,
-      bevelThickness: model === 'tofu60' ? 0.6 : model === 'bakeneko65' ? 0.8 : 1.0,
-      bevelSize: model === 'tofu60' ? 0.6 : model === 'bakeneko65' ? 0.8 : 1.0,
-      bevelSegments: model === 'mrsuit80' || model === 'bakeneko65' ? 4 : 2,
+      bevelThickness: model === 'tofu60' ? 0.6 : model === 'bakeneko65' || model === 'polaris_pad17' ? 0.8 : 1.0,
+      bevelSize: model === 'tofu60' ? 0.6 : model === 'bakeneko65' || model === 'polaris_pad17' ? 0.8 : 1.0,
+      bevelSegments: model === 'mrsuit80' || model === 'bakeneko65' || model === 'polaris_pad17' ? 4 : 2,
     };
 
     const geom = new THREE.ExtrudeGeometry(outerShape, extrudeSettings);
@@ -766,9 +779,21 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
     } else if (model === 'mrsuit80') {
       innerW = 358.5;
       innerD = 126.0;
+    } else if (model === 'polaris_pad17') {
+      innerW = 84.0;
+      innerD = 103.0;
     }
 
-    const cornerR = model === 'mrsuit80' ? 4.5 : model === 'bakeneko65' ? 3.2 : model === 'eveningstar75' ? 1.5 : 0.4;
+    const cornerR =
+      model === 'mrsuit80'
+        ? 4.5
+        : model === 'bakeneko65'
+        ? 3.2
+        : model === 'polaris_pad17'
+        ? 3.5
+        : model === 'eveningstar75'
+        ? 1.5
+        : 0.4;
     const outerShape = createRoundedRectShape(W - 0.5, D - 0.5, cornerR);
 
     const innerCavity = new THREE.Path();
@@ -794,7 +819,16 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
 
   // Bottom Base Plate
   const bottomBasePlateGeom = useMemo(() => {
-    const cornerR = model === 'mrsuit80' ? 4.0 : model === 'bakeneko65' ? 2.8 : model === 'eveningstar75' ? 1.2 : 0.2;
+    const cornerR =
+      model === 'mrsuit80'
+        ? 4.0
+        : model === 'bakeneko65'
+        ? 2.8
+        : model === 'polaris_pad17'
+        ? 3.0
+        : model === 'eveningstar75'
+        ? 1.2
+        : 0.2;
     const shape = createRoundedRectShape(W - 1.2, D - 1.2, cornerR);
     const geom = new THREE.ExtrudeGeometry(shape, { depth: 2.2, bevelEnabled: false });
     geom.rotateX(Math.PI / 2);
@@ -892,7 +926,21 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
 
   // Weight Geometry specific to model (default when not custom edition)
   const weightGeom = useMemo(() => {
-    if (model === 'bakeneko65') {
+    if (model === 'polaris_pad17') {
+      const weightW = 68.0;
+      const weightD = 72.0;
+      const shape = createRoundedRectShape(weightW, weightD, 3.0);
+      const geom = new THREE.ExtrudeGeometry(shape, {
+        depth: 3.2,
+        bevelEnabled: true,
+        bevelThickness: 0.5,
+        bevelSize: 0.5,
+        bevelSegments: 2,
+      });
+      geom.rotateX(Math.PI / 2);
+      geom.center();
+      return geom;
+    } else if (model === 'bakeneko65') {
       const weightW = 214.0;
       const weightD = 52.0;
       const shape = createRoundedRectShape(weightW, weightD, 2.5);
@@ -1447,6 +1495,20 @@ export const ProceduralCase: React.FC<ProceduralCaseProps> = ({
                   </mesh>
                 </group>
               ))}
+            </>
+          )}
+
+          {/* Polaris Pad 17: 4 Circular Anti-Slip Feet */}
+          {model === 'polaris_pad17' && (
+            <>
+              {[-W / 2 + 14.0, W / 2 - 14.0].map((fx, i) =>
+                [-D / 2 + 14.0, D / 2 - 14.0].map((fz, j) => (
+                  <mesh key={`pad-foot-${i}-${j}`} position={[fx, -5.2, fz]}>
+                    <cylinderGeometry args={[3.5, 3.5, 1.6, 16]} />
+                    <primitive object={rubberFootMat} attach="material" />
+                  </mesh>
+                ))
+              )}
             </>
           )}
 

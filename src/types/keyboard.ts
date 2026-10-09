@@ -1,4 +1,4 @@
-export type KeyboardModelId = 'eveningstar75' | 'mrsuit80' | 'tofu60' | 'bakeneko65';
+export type KeyboardModelId = 'eveningstar75' | 'mrsuit80' | 'tofu60' | 'bakeneko65' | 'polaris_pad17';
 
 export type GasketLayerId =
   | 'keycaps'
@@ -101,3 +101,30 @@ export interface KeyboardConfigV1 {
   explodedViewProgress: number;
   dampeningFoamInstalled: boolean;
 }
+
+export type KeyboardCategory = 'main' | 'pad';
+
+export interface KeyboardCategoryDefinition {
+  id: KeyboardCategory;
+  name: string;
+  icon: string;
+  description: string;
+  models: KeyboardModelId[];
+}
+
+export const KEYBOARD_CATEGORIES: KeyboardCategoryDefinition[] = [
+  {
+    id: 'main',
+    name: '主力键盘',
+    icon: '⌨️',
+    description: '标准与紧凑主力配列 (60% ~ 80%)',
+    models: ['eveningstar75', 'mrsuit80', 'bakeneko65', 'tofu60'],
+  },
+  {
+    id: 'pad',
+    name: '独立数字 PAD',
+    icon: '🔢',
+    description: '独立小键盘 / 数字输入矩阵 (17 键)',
+    models: ['polaris_pad17'],
+  },
+];
