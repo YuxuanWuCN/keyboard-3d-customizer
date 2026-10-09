@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useKeyboardStore } from '../../store/useKeyboardStore';
 import { THEME_PRESETS, POLARIS_CANDY_PRESET } from '../../constants/themePresets';
 import { SwitchModelId, SwitchType } from '../../types/keyboard';
+import { SingleSwitchViewer } from '../models/SingleSwitchViewer';
 import {
   Palette,
   Sparkles,
@@ -861,6 +862,26 @@ export const RightCustomizerDrawer: React.FC = () => {
             {/* TAB 3: SWITCHES & ACOUSTICS */}
             {activeTab === 'switches' && (
               <div className="flex flex-col gap-3">
+                {/* 3D Microscopic Switch Inspector & Disassembly Studio */}
+                {(() => {
+                  const currentSwitch =
+                    SWITCH_MODELS.find((s) => s.id === switchModel) || SWITCH_MODELS[0];
+                  return (
+                    <SingleSwitchViewer
+                      switchModel={switchModel}
+                      name={currentSwitch.name}
+                      force={currentSwitch.force}
+                      type={
+                        currentSwitch.type === 'linear'
+                          ? '线性轴'
+                          : currentSwitch.type === 'clicky'
+                          ? '有声段落'
+                          : '提前大段落'
+                      }
+                    />
+                  );
+                })()}
+
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-semibold text-slate-300">
                     主流机械轴体手感与物理声学
